@@ -1,0 +1,90 @@
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <vector>
+#include <map>
+#include <unordered_map>
+#include <sstream>
+using namespace std;
+
+struct node {
+	string name;
+	string lang;
+	string director;
+	
+	double rating;
+	
+	vector<string> actor;
+	vector<string> keywords;
+
+	bool isExplicit;
+
+	node() {
+		name = lang = director = "";
+		rating = 0.0;
+		isExplicit = false;
+	}
+
+	node(string n, string l, string d, double r, vector<string> a, vector<string> k, bool e) {
+		name = n;
+		lang = l;
+		director = d;
+		rating = r;
+		actor = a;
+		keywords = k;
+		isExplicit = e;
+	}
+};
+
+class adjacencyList {
+	double vCount;
+	unordered_map<string, pair<node, vector<node>>> graph;
+
+public:
+	adjacencyList() {
+		vCount = 0.0;
+	}
+
+	void insert(string from, string to) {
+		node f = node(from);
+		node t = node(to);
+		if (graph.find(from) == graph.end()) {
+			graph[from].first = f;
+			graph[from].first.num = vCount;
+			vCount++;
+		}
+		if (graph.find(to) == graph.end()) {
+			graph[to].first = t;
+			graph[to].first.num = vCount;
+			vCount++;
+		}
+		graph[from].second.push_back(t);
+		graph[from].first.outD += 1.0;
+	}
+
+	unordered_map<int,string> bfs(node& src) {
+		set<string> visited;
+		queue<string> q;
+		unordered_map<int, string> m;
+
+		int i = 0;
+
+		visited.insert(src.name);
+		q.push(src.name);
+
+		while (!q.empty()) {
+			string u = q.front();
+			map[i] = u;
+			i++;
+			q.pop();
+			vector<string> neighbors = graph[u];
+			sort(neighbors.begin(), neighbors.begin() + neighbors.size());
+			for(string v : neighbors)
+				if (visited.count(v) == 0) {
+					visited.insert(v);
+					q.push(v);
+				}
+		}
+		return m;
+	}
+};
