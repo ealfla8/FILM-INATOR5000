@@ -1,4 +1,5 @@
 import tkinter as tk 
+from functools import partial 
 
 window = tk.Tk()
 window.geometry("1000x1000")
@@ -62,14 +63,32 @@ directorEntry.pack()
 directorEntry.place(x = initialX, y = initialY + 300)
 directorInput = directorEntry.get()
 
-button = tk.Button(
-    text="Enter",
-    width=28,
-    height=1,
-    bg="white",
-    fg="black",
-) 
-button.place(x = initialX, y = initialY + 360)
+#enterButton = tk.Button(
+   # text="Enter",
+   # width=28,
+   # height=1,
+   # bg="white",
+   # fg="black",
+#) 
+#button.place(x = initialX, y = initialY + 360)
 
+def getInfo(message, e1, e2, e3, e4, e5, e6, e7): 
+    title = titleEntry.get() 
+    genre = genreEntry.get()
+    genre2 = genreEntry2.get()
+    genre3 = genreEntry3.get()
+    year = yearEntry.get()
+    explicit = explicitEntry.get()
+    director = directorEntry.get()
+
+    message.config(text = "The movie's title you selected is " + str(e1.get())) 
+
+message = tk.Label()
+
+displayAnswer = partial(getInfo, message, titleEntry, genreEntry, genreEntry2, genreEntry3, yearEntry, explicitEntry, directorEntry)
+message.place(x=10, y=500) 
+
+enterbutton = tk.Button(window, text = "Enter", command = displayAnswer)
+enterbutton.place(x=10, y=400)
 
 window.mainloop()
