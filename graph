@@ -5,64 +5,85 @@
 #include <map>
 #include <unordered_map>
 #include <sstream>
+#include <set>
+#include <queue>
 using namespace std;
 
+// idea: read in data and make unordered map with vector<pair<int,double>>> w/ double (weight) initially = 0
+//		 also at same time create nodes and push into map of map<int node> m
+//		 for each node in map, check and see if there is a single genre in common with each other, if there is, create "edge"
+//		 select "choice" and head to that specific index in graph
+//		 look at the connected edges and calculate weight; choose the max/min (max similarity score or min 1/similarity score) and return that
+
+
 struct node {
+	int id;
+	int startYear;
+
 	string name;
-	string lang;
+	//string lang;
 	string director;
+	vector<string> genre;
 	
 	double rating;
 	
-	vector<string> actor;
-	vector<string> keywords;
+	//vector<string> actor;
+	//vector<string> keywords;
 
 	bool isExplicit;
 
 	node() {
-		name = lang = director = "";
+		name = director = "";
 		rating = 0.0;
 		isExplicit = false;
+		id = 0000000;
+		startYear = 0;
 	}
 
-	node(string n, string l, string d, double r, vector<string> a, vector<string> k, bool e) {
+	node(int id,string n, string l, double r, bool e, vector<string> g, int sY) {
 		name = n;
-		lang = l;
-		director = d;
+		//lang = l;
+		//director = d;
 		rating = r;
-		actor = a;
-		keywords = k;
+		//actor = a;
+		//keywords = k;
 		isExplicit = e;
+		this->id = id;
+		genres = g;
+		startYear = sY;
 	}
 };
 
 class adjacencyList {
 	double vCount;
-	unordered_map<string, pair<node, vector<node>>> graph;
+	//unordered_map<int, pair<node, vector<node>>> graph;
+	unordered_map<int, vector<pair<int, double>>> graph;
+	vector<node> nodes;
 
 public:
 	adjacencyList() {
 		vCount = 0.0;
 	}
 
-	void insert(string from, string to) {
-		node f = node(from);
-		node t = node(to);
-		if (graph.find(from) == graph.end()) {
-			graph[from].first = f;
-			graph[from].first.num = vCount;
-			vCount++;
+	void insert(node& n) {
+		if (graph.find(n.id) == graph.end()) {
+			graph[n.id] = n.id;
+			nodes.push_back(n);
 		}
-		if (graph.find(to) == graph.end()) {
-			graph[to].first = t;
-			graph[to].first.num = vCount;
-			vCount++;
+		//if node shares genre with any movie, create an edge with it...
+		auto iter = graph.begin();
+		for (iter; iter != graph.end(); iter++) {
+			int i = iter->first;
+			if (n.genre.at(0) == nodes.at(i).genre(0)) { //checks if the first genre of both movies are equal... if so, adjacent
+				graph[n.id].push_back(make_pair(i, 0.0));
+				graph[i].push_back(make_pair(n.id, 0.0));
+			} 
 		}
-		graph[from].second.push_back(t);
-		graph[from].first.outD += 1.0;
+		vCount++;
 	}
 
 	unordered_map<int,string> bfs(node& src) {
+		/*
 		set<string> visited;
 		queue<string> q;
 		unordered_map<int, string> m;
@@ -84,6 +105,31 @@ public:
 					visited.insert(v);
 					q.push(v);
 				}
+		}
+		return m;
+		*/
+		set<int> visited;
+		queue<int> q;
+		vector<int> m;
+
+		visited.insert(src.id);
+		q.push(src.id);
+
+		while (!q.empty()) {
+			int u = q.front();
+			m.push_back(u);
+			q.pop();
+			vector<pair<int, double>> neighbors = graph[u];
+			sort(neighbors.begin(), neighbors.begin() + neighbors.size());
+			for (int v : neighbors) {
+				if (visited.count(v) == 0) {
+					//how to access the genre? can't access through map and can't get correct position in vector
+					//maybe deal with weight...?
+					//if(graph[u].at(v).second > 0.0 and within a certain range)
+					//	visited.insert(v);
+					//	q.push(v);
+				}
+			}
 		}
 		return m;
 	}
