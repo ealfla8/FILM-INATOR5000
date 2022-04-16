@@ -82,7 +82,7 @@ public:
 		vCount++;
 	}
 
-	unordered_map<int,string> bfs(node& src) {
+	vector<int> bfs(node& src) {
 		/*
 		set<string> visited;
 		queue<string> q;
