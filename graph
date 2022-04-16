@@ -99,8 +99,8 @@ public:
 			q.pop();
 			vector<pair<int, double>> neighbors = graph[u];
 			sort(neighbors.begin(), neighbors.begin() + neighbors.size());
-			for (int v : neighbors) {
-				if (visited.count(v) == 0) {
+			for (int v : neighbors.size()) {
+				if (visited.count(neighbors.at(v).first) == 0) {
 					//if(graph[u].at(v).second > 0.0 and within a certain range (a.k.a less than or equal to))
 					//	visited.insert(graph[u].at(v).first);
 					//	q.push(graph[u].at(v).first);
@@ -123,7 +123,7 @@ public:
 			vec.push_back(u);
 			s.pop();
 			vector<pair<int, double>> neighbors = graph[u];
-			for (int v : neighbors) {
+			for (visited.count(neighbors.at(v).first) == 0) {
 				//if(graph[u].at(v).second > 0.0 and it is within a range (wider than that of BFS))
 				//	visited.insert(graph[u].at(v).first);
 				//	s.push(graph[u].at(v).first);
