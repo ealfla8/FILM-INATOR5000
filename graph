@@ -59,7 +59,8 @@ class adjacencyList {
 	double vCount;
 	//unordered_map<int, pair<node, vector<node>>> graph;
 	unordered_map<int, vector<pair<int, double>>> graph;
-	vector<node> nodes;
+	//vector<node> nodes;
+	unordered_map<int, node> nodes;
 
 public:
 	adjacencyList() {
@@ -68,14 +69,15 @@ public:
 
 	void insert(node& n) {
 		if (graph.find(n.id) == graph.end()) {
-			graph[n.id] = n.id;
-			nodes.push_back(n);
+			pair<int, double> a = make_pair(n.id, 1.0);
+			graph[n.id] = a;
+			nodes[n.id] = n;
 		}
 		//if node shares genre with any movie, create an edge with it...
 		auto iter = graph.begin();
 		for (iter; iter != graph.end(); iter++) {
 			int i = iter->first;
-			if (n.genre.at(0) == nodes.at(i).genre(0)) { //checks if the first genre of both movies are equal... if so, adjacent
+			if (n.genre.at(0) == nodes[i].genre.at(0)) { //checks if the first genre of both movies are equal... if so, adjacent
 				graph[n.id].push_back(make_pair(i, 0.0));
 				graph[i].push_back(make_pair(n.id, 0.0));
 			} 
