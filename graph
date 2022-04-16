@@ -7,6 +7,7 @@
 #include <sstream>
 #include <set>
 #include <queue>
+#include <stack>
 using namespace std;
 
 // idea: read in data and make unordered map with vector<pair<int,double>>> w/ double (weight) initially = 0
@@ -83,31 +84,6 @@ public:
 	}
 
 	vector<int> bfs(node& src) {
-		/*
-		set<string> visited;
-		queue<string> q;
-		unordered_map<int, string> m;
-
-		int i = 0;
-
-		visited.insert(src.name);
-		q.push(src.name);
-
-		while (!q.empty()) {
-			string u = q.front();
-			map[i] = u;
-			i++;
-			q.pop();
-			vector<string> neighbors = graph[u];
-			sort(neighbors.begin(), neighbors.begin() + neighbors.size());
-			for(string v : neighbors)
-				if (visited.count(v) == 0) {
-					visited.insert(v);
-					q.push(v);
-				}
-		}
-		return m;
-		*/
 		set<int> visited;
 		queue<int> q;
 		vector<int> m;
@@ -123,14 +99,35 @@ public:
 			sort(neighbors.begin(), neighbors.begin() + neighbors.size());
 			for (int v : neighbors) {
 				if (visited.count(v) == 0) {
-					//how to access the genre? can't access through map and can't get correct position in vector
-					//maybe deal with weight...?
-					//if(graph[u].at(v).second > 0.0 and within a certain range)
-					//	visited.insert(v);
-					//	q.push(v);
+					//if(graph[u].at(v).second > 0.0 and within a certain range (a.k.a less than or equal to))
+					//	visited.insert(graph[u].at(v).first);
+					//	q.push(graph[u].at(v).first);
 				}
 			}
 		}
 		return m;
 	}
+
+	vector<int> dfs(node& src) {
+		set<int> visited;
+		stack<int> s;
+		vector<int> vec;
+
+		visited.insert(src.id);
+		s.push(src.id);
+
+		while (!s.empty()) {
+			int u = s.top();
+			vec.push_back(u);
+			s.pop();
+			vector<pair<int, double>> neighbors = graph[u];
+			for (int v : neighbors) {
+				//if(graph[u].at(v).second > 0.0 and it is within a range (wider than that of BFS))
+				//	visited.insert(graph[u].at(v).first);
+				//	s.push(graph[u].at(v).first);
+			}
+		}
+		return vec;
+	}
+
 };
