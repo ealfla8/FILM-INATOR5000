@@ -1,0 +1,97 @@
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <vector>
+#include <sstream>
+#include "graph.h"
+using std::string;
+using std::vector;
+using std::cout;
+using std::endl;
+using std::ifstream;
+using std::stringstream;
+
+int main() {
+
+    adjacencyList adjList;
+
+    string file1 = "title.basics.tsv"; //for title, isAdult, genre
+    string file2 = "title.crew.tsv"; //for directors, writers
+
+    ifstream f1Stream;
+    f1Stream.open(file1);
+    if (!(f1Stream.is_open())) {
+        cout << "You twit." << endl;
+    }
+
+    string input;
+
+    getline(f1Stream, input);
+    while (getline(f1Stream, input)) {
+
+        stringstream lineData(input);
+        string token;
+        node temp;
+        string tempStr;
+
+        getline(lineData, token, '\t');
+        temp.id = stoi(token.substr(2));
+        getline(lineData, token, '\t');
+        getline(lineData, token, '\t');
+        temp.name = token;
+        getline(lineData, token, '\t');
+        getline(lineData, token, '\t');
+        if (token == "0") {
+            temp.isExplicit = true;
+        }
+        else {
+            temp.isExplicit = false;
+        }
+        getline(lineData, token, '\t');
+        getline(lineData, token, '\t');
+        getline(lineData, token, '\t');
+        getline(lineData, token, '\t');
+        tempStr = token;
+        while (tempStr.size() > 0) {
+            temp.genre.push_back(tempStr.substr(0, ','));
+            tempStr = tempStr.substr(',' + 1);
+        }
+
+        adjList.insert(temp);
+    }
+
+    f1Stream.close();
+
+    ifstream f2Stream;
+    f2Stream.open(file2);
+    if (!(f2Stream.is_open())) {
+        cout << "You twit." << endl;
+    }
+
+    string input2; //can probably use the same one but it makes me feel better
+
+    getline(f2Stream, input);
+    while (getline(f2Stream, input)) {
+
+        stringstream lineData(input);
+        string token;
+        node temp;
+        string tempStr;
+
+        getline(lineData, token, '\t');
+        temp.id = stoi(token.substr(2));
+        getline(lineData, token, '\t');
+        temp.director = token.substr(0, ',');
+        getline(lineData, token, '\t');
+
+        for (auto v : adjList.nodes) {
+            if (v.id == temp.id) {
+                v.director = temp.director;
+            }
+        }
+    }
+
+    f2Stream.close();
+
+    return 0;
+}
