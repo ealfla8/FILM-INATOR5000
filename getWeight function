@@ -1,0 +1,23 @@
+double getWeight(node& from, node& to) {
+        double score = 0.0;
+        for (int i = 0; i < from.genre.size(); i++) {
+            if (from.genre[i] == to.genre[i]) {
+                score += 2.0;
+            }
+        }
+
+        if (from.director == to.director) {
+            score += 1.0;
+        }
+
+        if (from.isExplicit == to.isExplicit) {
+            score += 0.5;
+        }
+
+        if (abs(from.startYear - to.startYear) <= 5.0) {
+            score += 1.0;
+        }
+
+        double weight = (1.0 / score);
+        return weight;
+    }
