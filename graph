@@ -22,14 +22,10 @@ struct node {
 	int startYear;
 
 	string name;
-	//string lang;
 	string director;
 	vector<string> genre;
 	
 	double rating;
-	
-	//vector<string> actor;
-	//vector<string> keywords;
 
 	bool isExplicit;
 
@@ -43,11 +39,7 @@ struct node {
 
 	node(int id,string n, string l, double r, bool e, vector<string> g, int sY) {
 		name = n;
-		//lang = l;
-		//director = d;
 		rating = r;
-		//actor = a;
-		//keywords = k;
 		isExplicit = e;
 		this->id = id;
 		genres = g;
@@ -57,10 +49,9 @@ struct node {
 
 class adjacencyList {
 	double vCount;
-	//unordered_map<int, pair<node, vector<node>>> graph;
 	unordered_map<int, vector<pair<int, double>>> graph;
-	//vector<node> nodes;
 	unordered_map<int, node> nodes;
+	unordered_map<string, int> names;
 
 public:
 	adjacencyList() {
@@ -69,9 +60,11 @@ public:
 
 	void insert(node& n) {
 		if (graph.find(n.id) == graph.end()) {
-			pair<int, double> a = make_pair(n.id, 1.0);
-			graph[n.id] = a;
+			pair<int, double> a = make_pair(n.id, 0.0);
+			graph[n.id].push_back(a);
 			nodes[n.id] = n;
+			graph[n.id].pop_back();
+			names[n.name] = n.id;
 		}
 		//if node shares genre with any movie, create an edge with it...
 		auto iter = graph.begin();
@@ -109,6 +102,14 @@ public:
 		return weight;
 	}
 
+	//given a name identify what node it is 
+	node identifier(string str) {
+		int i;
+		if (names[str].count != 0)
+			i = names[str];
+		return nodes[i];
+	}
+
 	vector<int> bfs(node& src) {
 		set<int> visited;
 		queue<int> q;
@@ -125,9 +126,10 @@ public:
 			sort(neighbors.begin(), neighbors.begin() + neighbors.size());
 			for (int v : neighbors.size()) {
 				if (visited.count(neighbors.at(v).first) == 0) {
-					if(graph[u].at(v).second > 0.0 && graph[u].at(v).second <= 0.5)
+					if (graph[u].at(v).second > 0.0 && graph[u].at(v).second <= 0.5) {
 						visited.insert(graph[u].at(v).first);
 						q.push(graph[u].at(v).first);
+					}
 				}
 			}
 		}
@@ -147,11 +149,23 @@ public:
 			vec.push_back(u);
 			s.pop();
 			vector<pair<int, double>> neighbors = graph[u];
+			/*
 			for (visited.count(neighbors.at(v).first) == 0) {
-				if(graph[u].at(v).second > 0.0 && graph[u].at(v).second > 0.5 && graph[u].at(v).second <= 1)
+				if (graph[u].at(v).second > 0.0 && graph[u].at(v).second > 0.5 && graph[u].at(v).second <= 1) {
 					visited.insert(graph[u].at(v).first);
 					s.push(graph[u].at(v).first);
+				}
 			}
+			*/
+			for (int v : neighbors.size()) {
+				if (visited.count(neighbors.at(v).first) == 0) {
+					if (graph[u].at(v).second > 0.0 && graph[u].at(v).second <= 0.5) {
+						visted.insert(graph[u].at(v).first);
+						s.push(graph[u].at(v).first);
+					}
+				}
+			}
+
 		}
 		return vec;
 	}
