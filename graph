@@ -195,15 +195,15 @@ public:
 	}
 
 	void printGraph() {
-		auto iter = graph.begin();
-		auto i = nodes.begin();
-		for (iter; iter != graph.end(); iter++) {
-			cout << iter->first << ": " << i->second.name << endl;
-			cout << "Adjacent Movies: " << endl;
-			for (int i = 0; i < iter->second.size(); i++) 
-				cout << iter->second.at(i).first << ": " << nodes[iter->second.at(i).first].name << " - " << iter->second.at(i).second << endl;
-			cout << endl;
-		}
-	}
+        auto iter = graph.begin();
+        //auto i = nodes.begin();
+        for (iter; iter != graph.end(); iter++) {
+            cout << iter->first << ": " << nodes[iter->first].name << endl;
+            cout << "Adjacent Movies: " << endl;
+            for (int i = 0; i < iter->second.size(); i++)
+                cout << iter->second.at(i).first << ": " << nodes[iter->second.at(i).first].name << " - " << iter->second.at(i).second << endl;
+            cout << endl;
+        }
+    }
 
 };
