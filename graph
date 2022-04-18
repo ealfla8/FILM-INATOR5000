@@ -85,6 +85,30 @@ public:
 		vCount++;
 	}
 
+	double getWeight(node& from, node& to) {
+		double score = 0.0;
+		for (int i = 0; i < from.genre.size(); i++) {
+			if (from.genre[i] == to.genre[i]) {
+				score += 2.0;
+			}
+		}
+
+		if (from.director == to.director) {
+			score += 1.0;
+		}
+
+		if (from.isExplicit == to.isExplicit) {
+			score += 0.5;
+		}
+
+		if (abs(from.startYear - to.startYear) <= 5.0) {
+			score += 1.0;
+		}
+
+		double weight = (1.0 / score);
+		return weight;
+	}
+
 	vector<int> bfs(node& src) {
 		set<int> visited;
 		queue<int> q;
@@ -101,9 +125,9 @@ public:
 			sort(neighbors.begin(), neighbors.begin() + neighbors.size());
 			for (int v : neighbors.size()) {
 				if (visited.count(neighbors.at(v).first) == 0) {
-					//if(graph[u].at(v).second > 0.0 and within a certain range (a.k.a less than or equal to))
-					//	visited.insert(graph[u].at(v).first);
-					//	q.push(graph[u].at(v).first);
+					if(graph[u].at(v).second > 0.0 && graph[u].at(v).second <= 0.5)
+						visited.insert(graph[u].at(v).first);
+						q.push(graph[u].at(v).first);
 				}
 			}
 		}
@@ -124,12 +148,24 @@ public:
 			s.pop();
 			vector<pair<int, double>> neighbors = graph[u];
 			for (visited.count(neighbors.at(v).first) == 0) {
-				//if(graph[u].at(v).second > 0.0 and it is within a range (wider than that of BFS))
-				//	visited.insert(graph[u].at(v).first);
-				//	s.push(graph[u].at(v).first);
+				if(graph[u].at(v).second > 0.0 && graph[u].at(v).second > 0.5 && graph[u].at(v).second <= 1)
+					visited.insert(graph[u].at(v).first);
+					s.push(graph[u].at(v).first);
 			}
 		}
 		return vec;
+	}
+
+	void printGraph() {
+		auto iter = graph.begin();
+		auto i = nodes.begin();
+		for (iter; iter != graph.end(); iter++) {
+			cout << iter->first << ": " << i->second.name << endl;
+			cout << "Adjacent Movies: " << endl;
+			for (int i = 0; i < iter->second.size(); i++) 
+				cout << iter->second.at(i).first << ": " << nodes[iter->second.at(i).first].name << " - " << iter->second.at(i).second << endl;
+			cout << endl;
+		}
 	}
 
 };
