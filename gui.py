@@ -65,7 +65,7 @@ directorEntry.pack()
 directorEntry.place(x = initialX, y = initialY + 300)
 
 
-def getInfo(message, message2, message3, message4, message5, e1, e2, e3, e4, e5, e6, e7): 
+def getInfo(message, message2, message3, message4, message5): 
     title = titleEntry.get() 
     genre = genreEntry.get()
     genre2 = genreEntry2.get()
@@ -74,11 +74,14 @@ def getInfo(message, message2, message3, message4, message5, e1, e2, e3, e4, e5,
     explicit = explicitEntry.get()
     director = directorEntry.get()
 
-    message.config(text = "Title Selected:" + str(e1.get())) 
-    message2.config(text = "Genre Selected: " + str(e2.get()) + " " + str(e3.get()) + " " + str(e4.get()) )
-    message3.config(text = "Year Selected:" + str(e5.get()))
-    message4.config(text = "Explicit:" + str(e6.get()))
-    message5.config(text = "Director:" + str(e7.get()))
+    if title == "": 
+        title = "None Given"
+
+    message.config(text = "Title Selected:" + title)
+    message2.config(text = "Genre Selected: " + genre + " " + genre2 + " " + genre3 )
+    message3.config(text = "Year Selected:" + year)
+    message4.config(text = "Explicit:" + explicit)
+    message5.config(text = "Director:" + director)
 
 message = tk.Label()
 message2 = tk.Label()
@@ -86,8 +89,7 @@ message3 = tk.Label()
 message4 = tk.Label()
 message5 = tk.Label()
 
-
-displayAnswer = partial(getInfo, message, message2, message3, message4, message5, titleEntry, genreEntry, genreEntry2, genreEntry3, yearEntry, explicitEntry, directorEntry)
+displayAnswer = partial(getInfo, message, message2, message3, message4, message5)
 message.place(x=10, y=500) 
 message2.place(x=10, y =525)
 message3.place(x=10, y=550)
