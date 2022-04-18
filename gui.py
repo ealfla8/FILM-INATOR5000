@@ -4,14 +4,21 @@ from functools import partial
 window = tk.Tk()
 window.geometry("1000x1000")
 
-initialX = 20 
-initialY = 20
-
-#feels like kinda messy.. consider writing a function that sets up the entire GUI
+initialX = 50 
+initialY = 50
 
 #Title 
 projectTitle = tk.Label(text = "Film-Inator 5000") #creating the title label 
 projectTitle.pack() #adding the widget to the window, pack sizes the window as small as it can while still fully encompassing the widget 
+
+#Authors
+authorTitle = tk.Label(text = "By Catherine Lawrence, Emily Lu, and M Vargo")
+authorTitle.pack()
+
+#Instruction 
+instructionText = tk.Label( text = "Input either a title of a movie OR Input genres, year, explicit, director")
+instructionText.pack()
+
 
 title = tk.Label(text = "Title:")
 title.place(x = initialX, y =initialY)
@@ -35,17 +42,12 @@ genreEntry3 = tk.Entry(fg = "black", bg = "white", width = 30)
 genreEntry3.pack()
 genreEntry3.place(x = initialX, y = initialY + 120)
 
-genreInput = genreEntry.get()
-genreInput2 = genreEntry2.get()
-
-
 year = tk.Label(text = "Year:")
 year.pack(ipadx = 10, ipady = 10)
 year.place(x = initialX, y = initialY + 160)
 yearEntry = tk.Entry(fg = "black", bg = "white", width = 30)
 yearEntry.pack() 
 yearEntry.place(x = initialX, y = initialY + 180)
-yearInput = yearEntry.get()
 
 explicit = tk.Label(text = "Explicit:")
 explicit.pack(ipadx = 10, ipady = 10)
@@ -61,18 +63,9 @@ director.place (x = initialX, y = initialY + 280)
 directorEntry = tk.Entry(fg = "black", bg = "white", width = 30)
 directorEntry.pack() 
 directorEntry.place(x = initialX, y = initialY + 300)
-directorInput = directorEntry.get()
 
-#enterButton = tk.Button(
-   # text="Enter",
-   # width=28,
-   # height=1,
-   # bg="white",
-   # fg="black",
-#) 
-#button.place(x = initialX, y = initialY + 360)
 
-def getInfo(message, e1, e2, e3, e4, e5, e6, e7): 
+def getInfo(message, message2, message3, message4, message5, e1, e2, e3, e4, e5, e6, e7): 
     title = titleEntry.get() 
     genre = genreEntry.get()
     genre2 = genreEntry2.get()
@@ -81,14 +74,27 @@ def getInfo(message, e1, e2, e3, e4, e5, e6, e7):
     explicit = explicitEntry.get()
     director = directorEntry.get()
 
-    message.config(text = "The movie's title you selected is " + str(e1.get())) 
+    message.config(text = "Title Selected:" + str(e1.get())) 
+    message2.config(text = "Genre Selected: " + str(e2.get()) + " " + str(e3.get()) + " " + str(e4.get()) )
+    message3.config(text = "Year Selected:" + str(e5.get()))
+    message4.config(text = "Explicit:" + str(e6.get()))
+    message5.config(text = "Director:" + str(e7.get()))
 
 message = tk.Label()
+message2 = tk.Label()
+message3 = tk.Label()
+message4 = tk.Label()
+message5 = tk.Label()
 
-displayAnswer = partial(getInfo, message, titleEntry, genreEntry, genreEntry2, genreEntry3, yearEntry, explicitEntry, directorEntry)
+
+displayAnswer = partial(getInfo, message, message2, message3, message4, message5, titleEntry, genreEntry, genreEntry2, genreEntry3, yearEntry, explicitEntry, directorEntry)
 message.place(x=10, y=500) 
+message2.place(x=10, y =525)
+message3.place(x=10, y=550)
+message4.place(x=10, y=575)
+message5.place(x=10, y=600)
 
 enterbutton = tk.Button(window, text = "Enter", command = displayAnswer)
-enterbutton.place(x=10, y=400)
+enterbutton.place(x=50, y=400)
 
 window.mainloop()
