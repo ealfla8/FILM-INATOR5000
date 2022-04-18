@@ -27,8 +27,11 @@ int main() {
     string input;
 
     getline(f1Stream, input);
+    int count = 0;
     while (getline(f1Stream, input)) {
-
+        if (count == 10) {  //change for different range of test cases
+            break;
+        }
         stringstream lineData(input);
         string token;
         node temp;
@@ -52,12 +55,13 @@ int main() {
         getline(lineData, token, '\t');
         getline(lineData, token, '\t');
         tempStr = token;
-        while (tempStr.size() > 0) {
-            temp.genre.push_back(tempStr.substr(0, ','));
-            tempStr = tempStr.substr(',' + 1);
+        while (tempStr.find(',') != string::npos) {
+            temp.genre.push_back(tempStr.substr(0, tempStr.find(',')));  //romance,comedy,somethingelse
+            tempStr = tempStr.substr(tempStr.find(',') + 1);
         }
-
+        temp.genre.push_back(tempStr.substr(0, string::npos));
         adjList.insert(temp);
+        count += 1;
     }
 
     f1Stream.close();
@@ -71,7 +75,11 @@ int main() {
     string input2; //can probably use the same one but it makes me feel better
 
     getline(f2Stream, input);
+    int count2 = 0;
     while (getline(f2Stream, input)) {
+        if (count2 == 10) { //change for different range of test cases
+            break;
+        }
 
         stringstream lineData(input);
         string token;
@@ -84,11 +92,12 @@ int main() {
         temp.director = token.substr(0, ',');
         getline(lineData, token, '\t');
 
-        for (auto v : adjList.nodes) {
-            if (v.id == temp.id) {
-                v.director = temp.director;
+        for (auto v : adjList.getNodes()) {
+            if (v.second.id == temp.id) {
+                v.second.director = temp.director;
             }
         }
+        count2 += 1;
     }
 
     f2Stream.close();
