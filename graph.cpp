@@ -37,8 +37,9 @@ struct node {
 		startYear = 0;
 	}
 
-	node(int id,string n, string l, double r, bool e, vector<string> g, int sY) {
+	node(int id,string n, string d, double r, bool e, vector<string> g, int sY) {
 		name = n;
+    director = d;
 		rating = r;
 		isExplicit = e;
 		this->id = id;
@@ -72,8 +73,15 @@ public:
 		//iter++;
 		for (iter; iter != graph.end(); iter++) {
 			int i = iter->first;
+			/*
+			if (n.genre.at(0) == nodes[i].genre.at(0)) { //checks if the first genre of both movies are equal... if so, adjacent
+				graph[n.id].push_back(make_pair(i, 0.0));
+				graph[i].push_back(make_pair(n.id, 0.0));
+			} 
+			*/
 			if (n.id != i) {
-				if (isAdjacent(n.id, i)) {
+				if (isAdjacent(n.id, i) > 0) {
+          cout << "it got inside the third if" << endl;
 					pair<int, double> p1 = make_pair(n.id, 0.0); //the pair that represents the movie adjacent to i
 					pair<int, double> p2 = make_pair(i, 0.0); //the pair that represents the movie adjecent to n
 					graph[n.id].push_back(p2); //pushback p2 into vector of movies adjacent to n
@@ -84,23 +92,29 @@ public:
 		vCount++;
 	}
 
-	bool isAdjacent(int a, int b) {
+
+	int isAdjacent(int a, int b) {
 		node aA = nodes[a];
 		node bB = nodes[b];
-
+    int i = 0;
+    
 		//A: 0 1 2
 		//B: 0 1 2
 		//Possible combos: 0-0, 0-1, 0-2, 1-1, 1-2, 2-2
-		bool b1 = (aA.genre[0] == bB.genre[0]);
-		bool b2 = (aA.genre[0] == bB.genre[1]);
-		bool b3 = (aA.genre[0] == bB.genre[2]);
-		bool b4 = (aA.genre[1] == bB.genre[1]);
-		bool b5 = (aA.genre[1] == bB.genre[2]);
-		bool b6 = (aA.genre[2] == bB.genre[2]);
-
-		if (b1 || b2 || b3 || b4 || b5 || b6)
-			return true;
-		return false;
+  
+    if(aA.genre[0] == bB.genre[0])
+      i++;
+    if(aA.genre[0] == bB.genre[1])
+      i++;
+    if(aA.genre[0] == bB.genre[2])
+      i++;
+    if(aA.genre[1] == bB.genre[1])
+      i++;
+    if(aA.genre[1] == bB.genre[2])
+      i++;
+    if(aA.genre[2] == bB.genre[2])
+      i++;
+    return i;
 	}
 
 	double getWeight(node& from, node& to) {
@@ -152,13 +166,26 @@ public:
 			m.push_back(u);
 			q.pop();
 			vector<pair<int, double>> neighbors = graph[u];
+			//sort(neighbors.begin(), neighbors.begin() + neighbors.size());
 			for (int v = 0; v < neighbors.size(); v++) {
+				//if (visited.count(neighbors.at(v).first) != 0) {
+					/*
+					if (graph[u].at(v).second >= 0.0 && graph[u].at(v).second <= 0.5) {
+						visited.insert(graph[u].at(v).first);
+						q.push(graph[u].at(v).first);
+					}
+					*/
+					//make sure that all the genres are equalllll
+					//unordered_map<int, vector<pair<int, double>>> graph;
+					//unordered_map<int, node> nodes;
+					//unordered_map<string, int> names;
 					int id = graph[u].at(v).first;
 					int idv = neighbors.at(v).first;
 					if (nodes[id].genre == nodes[idv].genre) {
 						visited.insert(graph[u].at(v).first);
 						q.push(graph[u].at(v).first);
 					}
+				//}
 			}
 		}
 		return m;
@@ -177,7 +204,24 @@ public:
 			vec.push_back(u);
 			s.pop();
 			vector<pair<int, double>> neighbors = graph[u];
-
+			/*
+			for (visited.count(neighbors.at(v).first) == 0) {
+				if (graph[u].at(v).second > 0.0 && graph[u].at(v).second > 0.5 && graph[u].at(v).second <= 1) {
+					visited.insert(graph[u].at(v).first);
+					s.push(graph[u].at(v).first);
+				}
+			}
+			*/
+			/*
+			for (int v : neighbors.size()) {
+				if (visited.count(neighbors.at(v).first) == 0) {
+					if (graph[u].at(v).second >= 0.0 && graph[u].at(v).second <= 0.5) {
+						visited.insert(graph[u].at(v).first);
+						s.push(graph[u].at(v).first);
+					}
+				}
+			}
+			*/
 			//make sure at least one is equal
 			// 0 1 2 --> 0 0 - 0 1 - 0 2 - 1 1 - 1 2 - 2 2
 			// 0 1 2
@@ -196,6 +240,17 @@ public:
 	//hard coding to 2 works
 	//accurate version is on github
 	void printGraph() {
+		/*
+		auto iter = graph.begin();
+		auto i = nodes.begin();
+		for (iter; iter != graph.end(); iter++) {
+			cout << iter->first << ": " << i->second.name << endl;
+			cout << "Adjacent Movies: " << endl;
+			for (int i = 0; i < iter->second.size(); i++) 
+				cout << iter->second.at(i).first << ": " << nodes[iter->second.at(i).first].name << " - " << iter->second.at(i).second << endl;
+			cout << endl;
+		}
+		*/
 		auto iter = graph.begin();
 		//auto i = nodes.begin();
 		for (iter; iter != graph.end(); iter++) {
@@ -208,3 +263,4 @@ public:
 	}
 
 };
+
