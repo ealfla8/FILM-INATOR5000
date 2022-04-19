@@ -58,10 +58,6 @@ public:
 		vCount = 0.0;
 	}
 
-	unordered_map<int, node>& getNodes(){
-        return nodes; 
-    }
-
 	void insert(node& n) {
 		if (graph.find(n.id) == graph.end()) {
 			//pair<int, double> a = make_pair(n.id, 0.0);
@@ -84,8 +80,8 @@ public:
 			*/
 			if (n.id != i) {
 				if (isAdjacent(n.id, i)) {
-					pair p1 = make_pair(n.id, 0.0); //the pair that represents the movie adjacent to i
-					pair p2 = make_pair(i, 0.0); //the pair that represents the movie adjecent to n
+					pair<int, double> p1 = make_pair(n.id, 0.0); //the pair that represents the movie adjacent to i
+					pair<int, double> p2 = make_pair(i, 0.0); //the pair that represents the movie adjecent to n
 					graph[n.id].push_back(p2); //pushback p2 into vector of movies adjacent to n
 					graph[i].push_back(p1); //pushback p1 into vector of movies adjacent to i
 				}
@@ -221,7 +217,7 @@ public:
 				int id = graph[u].at(v).first;
 				int idv = neighbors.at(v).first;
 				if (nodes[id].genre.at(0) == nodes[idv].genre.at(0) || nodes[id].genre.at(0) == nodes[idv].genre.at(1) || nodes[id].genre.at(0) == nodes[idv].genre.at(2) || nodes[id].genre.at(1) == nodes[idv].genre.at(1) || nodes[id].genre.at(1) == nodes[idv].genre.at(2) || nodes[id].genre.at(2) == nodes[idv].genre.at(2)) {
-					visited.insert(graph[u].at(v).first);
+					visted.insert(graph[u].at(v).first);
 					s.push(graph[u].at(v).first);
 				}
 			}
