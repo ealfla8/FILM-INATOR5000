@@ -55,7 +55,7 @@ int main() {
         getline(lineData, token, '\t');
         getline(lineData, token, '\t');
         tempStr = token;
-        while (tempStr.find(',') != string::npos) {
+        while (tempStr.find(',') != string::npos && temp -> genre.size() < 3) {
             temp -> genre.push_back(tempStr.substr(0, tempStr.find(',')));  //romance,comedy,somethingelse
             tempStr = tempStr.substr(tempStr.find(',') + 1);
         }
