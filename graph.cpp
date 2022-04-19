@@ -24,7 +24,7 @@ struct node {
 	string name;
 	string director;
 	vector<string> genre;
-	
+
 	double rating;
 
 	bool isExplicit;
@@ -37,9 +37,9 @@ struct node {
 		startYear = 0;
 	}
 
-	node(int id,string n, string d, double r, bool e, vector<string> g, int sY) {
+	node(int id, string n, string d, double r, bool e, vector<string> g, int sY) {
 		name = n;
-    director = d;
+		director = d;
 		rating = r;
 		isExplicit = e;
 		this->id = id;
@@ -70,51 +70,45 @@ public:
 		}
 		//if node shares genre with any movie, create an edge with it...
 		auto iter = graph.begin();
-		//iter++;
+		iter++;
 		for (iter; iter != graph.end(); iter++) {
 			int i = iter->first;
-			/*
-			if (n.genre.at(0) == nodes[i].genre.at(0)) { //checks if the first genre of both movies are equal... if so, adjacent
-				graph[n.id].push_back(make_pair(i, 0.0));
-				graph[i].push_back(make_pair(n.id, 0.0));
-			} 
-			*/
-			if (n.id != i) {
-				if (isAdjacent(n.id, i) > 0) {
-          cout << "it got inside the third if" << endl;
-					pair<int, double> p1 = make_pair(n.id, 0.0); //the pair that represents the movie adjacent to i
-					pair<int, double> p2 = make_pair(i, 0.0); //the pair that represents the movie adjecent to n
-					graph[n.id].push_back(p2); //pushback p2 into vector of movies adjacent to n
-					graph[i].push_back(p1); //pushback p1 into vector of movies adjacent to i
-				}
+			//cout << i << endl;
+			if (isAdjacent(n.id, i) != 0) { //this is the problem!! it doesn't get here!!! 
+				cout << "it got inside the third if" << endl;
+				pair<int, double> p1 = make_pair(n.id, 0.0); //the pair that represents the movie adjacent to i
+				pair<int, double> p2 = make_pair(i, 0.0); //the pair that represents the movie adjecent to n
+				graph[n.id].push_back(p2); //pushback p2 into vector of movies adjacent to n
+				graph[i].push_back(p1); //pushback p1 into vector of movies adjacent to i
 			}
 		}
+		//cout << endl;
 		vCount++;
 	}
 
 
-	int isAdjacent(int a, int b) {
+	int isAdjacent(int a, int b) { //this works!! yay!!!
 		node aA = nodes[a];
 		node bB = nodes[b];
-    int i = 0;
-    
+		int i = 0;
+
 		//A: 0 1 2
 		//B: 0 1 2
 		//Possible combos: 0-0, 0-1, 0-2, 1-1, 1-2, 2-2
-  
-    if(aA.genre[0] == bB.genre[0])
-      i++;
-    if(aA.genre[0] == bB.genre[1])
-      i++;
-    if(aA.genre[0] == bB.genre[2])
-      i++;
-    if(aA.genre[1] == bB.genre[1])
-      i++;
-    if(aA.genre[1] == bB.genre[2])
-      i++;
-    if(aA.genre[2] == bB.genre[2])
-      i++;
-    return i;
+
+		if (aA.genre[0] == bB.genre[0])
+			i++;
+		if (aA.genre[0] == bB.genre[1])
+			i++;
+		if (aA.genre[0] == bB.genre[2])
+			i++;
+		if (aA.genre[1] == bB.genre[1])
+			i++;
+		if (aA.genre[1] == bB.genre[2])
+			i++;
+		if (aA.genre[2] == bB.genre[2])
+			i++;
+		return i;
 	}
 
 	double getWeight(node& from, node& to) {
@@ -179,12 +173,12 @@ public:
 					//unordered_map<int, vector<pair<int, double>>> graph;
 					//unordered_map<int, node> nodes;
 					//unordered_map<string, int> names;
-					int id = graph[u].at(v).first;
-					int idv = neighbors.at(v).first;
-					if (nodes[id].genre == nodes[idv].genre) {
-						visited.insert(graph[u].at(v).first);
-						q.push(graph[u].at(v).first);
-					}
+				int id = graph[u].at(v).first;
+				int idv = neighbors.at(v).first;
+				if (nodes[id].genre == nodes[idv].genre) {
+					visited.insert(graph[u].at(v).first);
+					q.push(graph[u].at(v).first);
+				}
 				//}
 			}
 		}
@@ -236,7 +230,7 @@ public:
 		}
 		return vec;
 	}
-	
+
 	//hard coding to 2 works
 	//accurate version is on github
 	void printGraph() {
@@ -246,7 +240,7 @@ public:
 		for (iter; iter != graph.end(); iter++) {
 			cout << iter->first << ": " << i->second.name << endl;
 			cout << "Adjacent Movies: " << endl;
-			for (int i = 0; i < iter->second.size(); i++) 
+			for (int i = 0; i < iter->second.size(); i++)
 				cout << iter->second.at(i).first << ": " << nodes[iter->second.at(i).first].name << " - " << iter->second.at(i).second << endl;
 			cout << endl;
 		}
