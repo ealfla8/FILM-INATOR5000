@@ -72,12 +72,6 @@ public:
 		//iter++;
 		for (iter; iter != graph.end(); iter++) {
 			int i = iter->first;
-			/*
-			if (n.genre.at(0) == nodes[i].genre.at(0)) { //checks if the first genre of both movies are equal... if so, adjacent
-				graph[n.id].push_back(make_pair(i, 0.0));
-				graph[i].push_back(make_pair(n.id, 0.0));
-			} 
-			*/
 			if (n.id != i) {
 				if (isAdjacent(n.id, i)) {
 					pair<int, double> p1 = make_pair(n.id, 0.0); //the pair that represents the movie adjacent to i
@@ -158,26 +152,13 @@ public:
 			m.push_back(u);
 			q.pop();
 			vector<pair<int, double>> neighbors = graph[u];
-			sort(neighbors.begin(), neighbors.begin() + neighbors.size());
 			for (int v = 0; v < neighbors.size(); v++) {
-				//if (visited.count(neighbors.at(v).first) != 0) {
-					/*
-					if (graph[u].at(v).second >= 0.0 && graph[u].at(v).second <= 0.5) {
-						visited.insert(graph[u].at(v).first);
-						q.push(graph[u].at(v).first);
-					}
-					*/
-					//make sure that all the genres are equalllll
-					//unordered_map<int, vector<pair<int, double>>> graph;
-					//unordered_map<int, node> nodes;
-					//unordered_map<string, int> names;
 					int id = graph[u].at(v).first;
 					int idv = neighbors.at(v).first;
 					if (nodes[id].genre == nodes[idv].genre) {
 						visited.insert(graph[u].at(v).first);
 						q.push(graph[u].at(v).first);
 					}
-				//}
 			}
 		}
 		return m;
@@ -196,24 +177,7 @@ public:
 			vec.push_back(u);
 			s.pop();
 			vector<pair<int, double>> neighbors = graph[u];
-			/*
-			for (visited.count(neighbors.at(v).first) == 0) {
-				if (graph[u].at(v).second > 0.0 && graph[u].at(v).second > 0.5 && graph[u].at(v).second <= 1) {
-					visited.insert(graph[u].at(v).first);
-					s.push(graph[u].at(v).first);
-				}
-			}
-			*/
-			/*
-			for (int v : neighbors.size()) {
-				if (visited.count(neighbors.at(v).first) == 0) {
-					if (graph[u].at(v).second >= 0.0 && graph[u].at(v).second <= 0.5) {
-						visted.insert(graph[u].at(v).first);
-						s.push(graph[u].at(v).first);
-					}
-				}
-			}
-			*/
+
 			//make sure at least one is equal
 			// 0 1 2 --> 0 0 - 0 1 - 0 2 - 1 1 - 1 2 - 2 2
 			// 0 1 2
@@ -232,17 +196,6 @@ public:
 	//hard coding to 2 works
 	//accurate version is on github
 	void printGraph() {
-		/*
-		auto iter = graph.begin();
-		auto i = nodes.begin();
-		for (iter; iter != graph.end(); iter++) {
-			cout << iter->first << ": " << i->second.name << endl;
-			cout << "Adjacent Movies: " << endl;
-			for (int i = 0; i < iter->second.size(); i++) 
-				cout << iter->second.at(i).first << ": " << nodes[iter->second.at(i).first].name << " - " << iter->second.at(i).second << endl;
-			cout << endl;
-		}
-		*/
 		auto iter = graph.begin();
 		//auto i = nodes.begin();
 		for (iter; iter != graph.end(); iter++) {
