@@ -49,7 +49,7 @@ yearEntry = tk.Entry(fg = "black", bg = "white", width = 30)
 yearEntry.pack() 
 yearEntry.place(x = initialX, y = initialY + 180)
 
-explicit = tk.Label(text = "Explicit:")
+explicit = tk.Label(text = "Explicit Language(Yes or No):")
 explicit.pack(ipadx = 10, ipady = 10)
 explicit.place(x = initialX, y = initialY + 220)
 explicitEntry = tk.Entry(fg = "black", bg = "white", width = 30)
