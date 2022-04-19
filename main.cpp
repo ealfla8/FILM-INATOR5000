@@ -12,8 +12,8 @@ using std::ifstream;
 using std::stringstream;
 
 int main() {
-
-    adjacencyList adjList;
+    
+    adjacencyList* adjList = new adjacencyList;
 
     string file1 = "title.basics.tsv"; //for title, isAdult, genre
     string file2 = "title.crew.tsv"; //for directors, writers
@@ -34,21 +34,21 @@ int main() {
         }
         stringstream lineData(input);
         string token;
-        node temp;
+        node* temp = new node;
         string tempStr;
 
         getline(lineData, token, '\t');
-        temp.id = stoi(token.substr(2));
+        temp -> id = stoi(token.substr(2));
         getline(lineData, token, '\t');
         getline(lineData, token, '\t');
-        temp.name = token;
+        temp -> name = token;
         getline(lineData, token, '\t');
         getline(lineData, token, '\t');
-        if (token == "0") {
-            temp.isExplicit = true;
+        if (token == "1") {
+            temp -> isExplicit = true;
         }
         else {
-            temp.isExplicit = false;
+            temp -> isExplicit = false;
         }
         getline(lineData, token, '\t');
         getline(lineData, token, '\t');
@@ -56,12 +56,13 @@ int main() {
         getline(lineData, token, '\t');
         tempStr = token;
         while (tempStr.find(',') != string::npos) {
-            temp.genre.push_back(tempStr.substr(0, tempStr.find(',')));  //romance,comedy,somethingelse
+            temp -> genre.push_back(tempStr.substr(0, tempStr.find(',')));  //romance,comedy,somethingelse
             tempStr = tempStr.substr(tempStr.find(',') + 1);
         }
-        temp.genre.push_back(tempStr.substr(0, string::npos));
-        adjList.insert(temp);
+        temp -> genre.push_back(tempStr.substr(0, string::npos));
+        adjList -> insert(*temp);
         count += 1;
+        delete temp;
     }
 
     f1Stream.close();
@@ -72,7 +73,7 @@ int main() {
         cout << "You twit." << endl;
     }
 
-    string input2; //can probably use the same one but it makes me feel better
+    string input2;
 
     getline(f2Stream, input);
     int count2 = 0;
@@ -83,24 +84,29 @@ int main() {
 
         stringstream lineData(input);
         string token;
-        node temp;
+        node* temp = new node;
         string tempStr;
 
         getline(lineData, token, '\t');
-        temp.id = stoi(token.substr(2));
+        temp -> id = stoi(token.substr(2));
         getline(lineData, token, '\t');
-        temp.director = token.substr(0, ',');
+        temp -> director = token.substr(0, ',');
         getline(lineData, token, '\t');
 
-        for (auto v : adjList.getNodes()) {
-            if (v.second.id == temp.id) {
-                v.second.director = temp.director;
+        for (auto v : adjList -> getNodes()) {
+            if (v.second.id == temp -> id) {
+                v.second.director = temp -> director;
             }
         }
         count2 += 1;
+
+        delete temp;
     }
 
     f2Stream.close();
+
+    adjList -> printGraph();
+    //adjList.dfs(adjList.getNodes()[1]);
 
     return 0;
 }
