@@ -141,6 +141,10 @@ public:
 		return nodes[i];
 	}
 
+	unordered_map<int, node>& getNodes() {
+		return nodes;
+	}
+
 	vector<int> bfs(node& src) {
 		set<int> visited;
 		queue<int> q;
@@ -217,7 +221,7 @@ public:
 				int id = graph[u].at(v).first;
 				int idv = neighbors.at(v).first;
 				if (nodes[id].genre.at(0) == nodes[idv].genre.at(0) || nodes[id].genre.at(0) == nodes[idv].genre.at(1) || nodes[id].genre.at(0) == nodes[idv].genre.at(2) || nodes[id].genre.at(1) == nodes[idv].genre.at(1) || nodes[id].genre.at(1) == nodes[idv].genre.at(2) || nodes[id].genre.at(2) == nodes[idv].genre.at(2)) {
-					visted.insert(graph[u].at(v).first);
+					visited.insert(graph[u].at(v).first);
 					s.push(graph[u].at(v).first);
 				}
 			}
