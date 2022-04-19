@@ -75,7 +75,7 @@ public:
 			int i = iter->first;
 			//cout << i << endl;
 			if (isAdjacent(n.id, i) != 0) { //this is the problem!! it doesn't get here!!! 
-				cout << "it got inside the third if" << endl;
+				//cout << "it got inside the third if" << endl;
 				pair<int, double> p1 = make_pair(n.id, 0.0); //the pair that represents the movie adjacent to i
 				pair<int, double> p2 = make_pair(i, 0.0); //the pair that represents the movie adjecent to n
 				graph[n.id].push_back(p2); //pushback p2 into vector of movies adjacent to n
@@ -86,30 +86,34 @@ public:
 		vCount++;
 	}
 
-
 	int isAdjacent(int a, int b) { //this works!! yay!!!
+		//printf("Checking if isAdjacent for %d and %d\n", a, b);
 		node aA = nodes[a];
 		node bB = nodes[b];
-		int i = 0;
 
-		//A: 0 1 2
-		//B: 0 1 2
-		//Possible combos: 0-0, 0-1, 0-2, 1-1, 1-2, 2-2
+		/*printf("printing node A genres:\n");
+		for(auto i: aA.genre){
+			cout << i << endl;
+		}
+		printf("\nprinting node B genres:\n");
+		for(auto i: bB.genre){
+			cout << i << endl;
+		} */ 
+		int c = 0;
 
-		if (aA.genre[0] == bB.genre[0])
-			i++;
-		if (aA.genre[0] == bB.genre[1])
-			i++;
-		if (aA.genre[0] == bB.genre[2])
-			i++;
-		if (aA.genre[1] == bB.genre[1])
-			i++;
-		if (aA.genre[1] == bB.genre[2])
-			i++;
-		if (aA.genre[2] == bB.genre[2])
-			i++;
-		return i;
+		for(int i = 0; i < aA.genre.size(); ++i){
+			for(int j = i; j < bB.genre.size(); ++j){
+				if(aA.genre[i] == bB.genre[j]){
+					++c;
+				}
+			}
+		}
+		cout << c; 
+		return c;
 	}
+
+
+	
 
 	double getWeight(node& from, node& to) {
 		double score = 0.0;
