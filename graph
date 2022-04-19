@@ -60,22 +60,53 @@ public:
 
 	void insert(node& n) {
 		if (graph.find(n.id) == graph.end()) {
-			pair<int, double> a = make_pair(n.id, 0.0);
-			graph[n.id].push_back(a);
+			//pair<int, double> a = make_pair(n.id, 0.0);
+			vector<pair<int, double>> a = {};
+			graph[n.id] = a;
 			nodes[n.id] = n;
-			graph[n.id].pop_back();
+			//graph[n.id].pop_back();
 			names[n.name] = n.id;
 		}
 		//if node shares genre with any movie, create an edge with it...
 		auto iter = graph.begin();
+		//iter++;
 		for (iter; iter != graph.end(); iter++) {
 			int i = iter->first;
+			/*
 			if (n.genre.at(0) == nodes[i].genre.at(0)) { //checks if the first genre of both movies are equal... if so, adjacent
 				graph[n.id].push_back(make_pair(i, 0.0));
 				graph[i].push_back(make_pair(n.id, 0.0));
 			} 
+			*/
+			if (n.id != i) {
+				if (isAdjacent(n.id, i)) {
+					pair p1 = make_pair(n.id, 0.0); //the pair that represents the movie adjacent to i
+					pair p2 = make_pair(i, 0.0); //the pair that represents the movie adjecent to n
+					graph[n.id].push_back(p2); //pushback p2 into vector of movies adjacent to n
+					graph[i].push_back(p1); //pushback p1 into vector of movies adjacent to i
+				}
+			}
 		}
 		vCount++;
+	}
+
+	bool isAdjacent(int a, int b) {
+		node aA = nodes[a];
+		node bB = nodes[b];
+
+		//A: 0 1 2
+		//B: 0 1 2
+		//Possible combos: 0-0, 0-1, 0-2, 1-1, 1-2, 2-2
+		bool b1 = (aA.genre(0) == bB.genre(0));
+		bool b2 = (aA.genre(0) == bB.genre(1));
+		bool b3 = (aA.genre(0) == bB.genre(2));
+		bool b4 = (aA.genre(1) == bB.genre(1));
+		bool b5 = (aA.genre(1) == bB.genre(2));
+		bool b6 = (aA.genre(2) == bB.genre(2));
+
+		if (b1 || b2 || b3 || b4 || b5 || b6)
+			return true;
+		return false;
 	}
 
 	double getWeight(node& from, node& to) {
@@ -193,17 +224,30 @@ public:
 		}
 		return vec;
 	}
-
+	
+	//hard coding to 2 works
+	//accurate version is on github
 	void printGraph() {
-        auto iter = graph.begin();
-        //auto i = nodes.begin();
-        for (iter; iter != graph.end(); iter++) {
-            cout << iter->first << ": " << nodes[iter->first].name << endl;
-            cout << "Adjacent Movies: " << endl;
-            for (int i = 0; i < iter->second.size(); i++)
-                cout << iter->second.at(i).first << ": " << nodes[iter->second.at(i).first].name << " - " << iter->second.at(i).second << endl;
-            cout << endl;
-        }
-    }
+		/*
+		auto iter = graph.begin();
+		auto i = nodes.begin();
+		for (iter; iter != graph.end(); iter++) {
+			cout << iter->first << ": " << i->second.name << endl;
+			cout << "Adjacent Movies: " << endl;
+			for (int i = 0; i < iter->second.size(); i++) 
+				cout << iter->second.at(i).first << ": " << nodes[iter->second.at(i).first].name << " - " << iter->second.at(i).second << endl;
+			cout << endl;
+		}
+		*/
+		auto iter = graph.begin();
+		//auto i = nodes.begin();
+		for (iter; iter != graph.end(); iter++) {
+			cout << iter->first << ": " << nodes[iter->first].name << endl;
+			cout << "Adjacent Movies: " << endl;
+			for (int i = 0; i < iter->second.size(); i++)
+				cout << iter->second.at(i).first << ": " << nodes[iter->second.at(i).first].name << " - " << iter->second.at(i).second << endl;
+			cout << endl;
+		}
+	}
 
 };
