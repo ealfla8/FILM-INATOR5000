@@ -58,6 +58,10 @@ public:
 		vCount = 0.0;
 	}
 
+	unordered_map<int, node>& getNodes(){
+        return nodes; 
+    }
+
 	void insert(node& n) {
 		if (graph.find(n.id) == graph.end()) {
 			//pair<int, double> a = make_pair(n.id, 0.0);
@@ -97,12 +101,12 @@ public:
 		//A: 0 1 2
 		//B: 0 1 2
 		//Possible combos: 0-0, 0-1, 0-2, 1-1, 1-2, 2-2
-		bool b1 = (aA.genre(0) == bB.genre(0));
-		bool b2 = (aA.genre(0) == bB.genre(1));
-		bool b3 = (aA.genre(0) == bB.genre(2));
-		bool b4 = (aA.genre(1) == bB.genre(1));
-		bool b5 = (aA.genre(1) == bB.genre(2));
-		bool b6 = (aA.genre(2) == bB.genre(2));
+		bool b1 = (aA.genre[0] == bB.genre[0]);
+		bool b2 = (aA.genre[0] == bB.genre[1]);
+		bool b3 = (aA.genre[0] == bB.genre[2]);
+		bool b4 = (aA.genre[1] == bB.genre[1]);
+		bool b5 = (aA.genre[1] == bB.genre[2]);
+		bool b6 = (aA.genre[2] == bB.genre[2]);
 
 		if (b1 || b2 || b3 || b4 || b5 || b6)
 			return true;
@@ -217,7 +221,7 @@ public:
 				int id = graph[u].at(v).first;
 				int idv = neighbors.at(v).first;
 				if (nodes[id].genre.at(0) == nodes[idv].genre.at(0) || nodes[id].genre.at(0) == nodes[idv].genre.at(1) || nodes[id].genre.at(0) == nodes[idv].genre.at(2) || nodes[id].genre.at(1) == nodes[idv].genre.at(1) || nodes[id].genre.at(1) == nodes[idv].genre.at(2) || nodes[id].genre.at(2) == nodes[idv].genre.at(2)) {
-					visted.insert(graph[u].at(v).first);
+					visited.insert(graph[u].at(v).first);
 					s.push(graph[u].at(v).first);
 				}
 			}
