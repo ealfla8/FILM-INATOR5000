@@ -80,7 +80,6 @@ public:
 		vCount++;
 	}
 
-
 	int isAdjacent(int a, int b) { //this works!! yay!!!
 		node aA = nodes[a];
 		node bB = nodes[b];
@@ -142,6 +141,10 @@ public:
 	unordered_map<int, node>& getNodes() {
 		return nodes;
 	}
+
+  unordered_map<int, vector<pair<int, double>>> getGraph(){
+    return graph;
+  }
 
 	vector<int> bfs(node& src) {
 		set<int> visited;
@@ -232,52 +235,5 @@ public:
 
 };
 
-int main(){
-  vector<string> g1 = {"adventure","action","comedy"};
-  vector<string> g2 = {"mystery","drama","action"};
-  vector<string> g3 = {"fantasy","adventure","family"};
-  vector<string> g4 = {"romance", "drama", "teen"};
-  vector<string> g5 = {"action", "adventure", "comedy"};
-  vector<string> g6 = {"action", "adventure", "family"};
-  
-  node av = node(0504, "Avengers", "Josh Wedon", 8.0, false, g1, 2012);
-  node sh = node(1225, "Sherlock Holmes", "Guy Ritchie", 7.6, false, g2, 2009);
-  node dl = node(0117, "Dolittle", "Stephen Gaghan", 5.6, false, g3, 2020);
-  node pw = node(1821, "The Perks of Being a Wallflower", "Stephen Chbosky", 8.0, false, g4, 2012);
-  node aw = node(0706, "Antman and the Wasp", "Peyton Reed", 7.0, false, g4, 2018);
-  node iw = node(0427, "Infinity War", "Joe Russo", 8.5, false, g5, 2018);
-  node im = node(0502, "Iron Man", "Jon Fabreau", 7.9, false, g6, 2008);
 
-  adjacencyList g;
-  g.insert(av);
-  g.insert(sh);
-  g.insert(dl);
-  g.insert(pw);
-  g.insert(aw);
-  g.insert(im);
-
-  g.createEdge(av, sh);
-  g.createEdge(av, dl);
-  g.createEdge(av, pw);
-  g.createEdge(av, aw);
-  g.createEdge(av, im);
-  g.createEdge(sh, dl);
-  g.createEdge(sh, pw);
-  g.createEdge(sh, aw);
-  g.createEdge(sh, im);
-  g.createEdge(dl, pw);
-  g.createEdge(dl, aw);
-  g.createEdge(dl, im);
-  g.createEdge(pw, aw);
-  g.createEdge(pw, im);
-  g.createEdge(aw, im);
-  
-  //g.printGraph();
-  //av.to_string(av);
-  //cout << endl;
-  //sh.to_string(sh);
-  //cout << endl;
-  //dl.to_string(dl);
-
-}
     
