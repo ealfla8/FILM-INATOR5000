@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <string>
 #include <vector>
+#include <algorithm>
 #include <map>
 #include <unordered_map>
 #include <sstream>
@@ -146,7 +147,19 @@ public:
     return graph;
   }
 
-	vector<int> bfs(node& src) {
+  bool isEqualGenre(node& a, node&b){
+	  int ii = 0; 
+	  for(int i=0; i<a.genre.size(); i++){
+		  if(find(b.genre.begin(), b.genre.end(), a.genre.at(i)) != b.genre.end())
+		  		ii++; 
+	  }
+	  if( ii == a.genre.size())
+	  		return true; 
+	  return false; 
+  }
+
+	void bfs(node& src) {
+		/*
 		set<int> visited;
 		queue<int> q;
 		vector<int> m;
@@ -164,10 +177,10 @@ public:
 			vector<pair<int, double>> neighbors = graph[u];
 			for (int v = 0; v < neighbors.size(); v++) {
         cout << "entered the for loop" << endl;
-				//if (visited.count(neighbors.at(v).first) != 0) {
+				//if (isEqualGenre(node& a, node&b)) {
 					int id = graph[u].at(v).first;
 					int idv = neighbors.at(v).first;
-					if (nodes[id].genre == nodes[idv].genre) {
+					if (isEqualGenre(nodes[id], nodes[idv])) {
             cout << "entered the if statement" << endl;
 						visited.insert(graph[u].at(v).first);
 						q.push(graph[u].at(v).first);
@@ -177,6 +190,26 @@ public:
 		}
     cout << "reached end of bfs" << endl;
 		return m;
+		*/
+		set<int> visited;
+		queue<int> q;
+
+		visited.insert(src.id);
+		q.push(src.id);
+		cout << "Movies that have the same genre as " << src.name << endl;
+
+		while(!q.empty()){
+			int u = q.front();
+			q.pop();
+			vector<pair<int, double>> neighbors = graph[u];
+			for(int v = 0; v < neighbors.size(); v++){
+				if(visited.count(neighbors.at(v).first) == 0){
+					visited.insert(neighbors.at(v).first);
+					q.push(neighbors.at(v).first);
+					cout << nodes[neighbors.at(v).first].name << endl;
+				}
+			}
+		}
 	}
 
 	vector<int> dfs(node& src) {
