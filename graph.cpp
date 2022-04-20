@@ -93,7 +93,6 @@ public:
 				}
 			}
 		}
-		//cout << c; 
 		return c;
 	}
 
@@ -147,21 +146,16 @@ public:
     return graph;
   }
 
-  bool isEqualGenre(node& a, node& b){
-    int ii = 0;
-    for(int i = 0; i < a.genre.size(); i++){
-      if(find(b.genre.begin(), b.genre.end(), a.genre.at(i)) != b.genre.end())
-        ii++;
-    }
-    if(ii == a.genre.size())
-      return true;
-    return false;
+  void printGenres(node& n){
+    cout << "Genres: ";
+    for(int i = 0; i < n.genre.size(); i++)
+      cout << n.genre.at(i) << " ";
+    cout << endl << endl;
   }
 
   void bfs(node& src){
     set<int> visited;
     queue<int> q;
-    //vector<string> vec;
 
     visited.insert(src.id);
     q.push(src.id);
@@ -173,8 +167,10 @@ public:
       int u = q.front();
       if(counter == 11)
         break;
-      if(nodes[u].name != src.name)
+      if(nodes[u].name != src.name){
         cout << nodes[u].name << " - " << getWeight(nodes[src.id], nodes[u]) << endl;
+        printGenres(nodes[u]);
+      }
       counter += 1;
       q.pop();
       vector<pair<int, double>> neighbors = graph[u];
@@ -183,13 +179,6 @@ public:
           visited.insert(neighbors.at(v).first);
           q.push(neighbors.at(v).first);
         }
-          /*
-          if(isEqualGenre(src, nodes[neighbors.at(v).first]) == true && neighbors.at(v).second <= 0.3){
-            visited.insert(neighbors.at(v).first);
-            q.push(neighbors.at(v).first);
-            cout << nodes[neighbors.at(v).first].name << endl;
-          }
-        */
       }
     }
   }
@@ -208,20 +197,15 @@ public:
       int u = s.top();
       if(counter == 11)
         break;
-      if(nodes[u].name != src.name)
+      if(nodes[u].name != src.name){
         cout << nodes[u].name << " - " << getWeight(nodes[src.id], nodes[u]) << endl;
+        printGenres(nodes[u]);
+      }
       counter += 1;
       s.pop();
       vector<pair<int, double>> neighbors = graph[u];
       for(int v = 0; v < neighbors.size(); v++){
         if(visited.count(neighbors.at(v).first) == 0){
-          /*
-          if(neighbors.at(v).second <= 0.75 && neighbors.at(v).second >= 0.5){
-            visited.insert(neighbors.at(v).first);
-            s.push(neighbors.at(v).first);
-            cout << nodes[neighbors.at(v).first].name << endl;
-          }
-          */
           visited.insert(neighbors.at(v).first);
           s.push(neighbors.at(v).first);
         }
@@ -244,5 +228,3 @@ public:
 
 };
 
-
-    
