@@ -71,6 +71,10 @@ public:
 		vCount = 0.0;
 	}
 
+	unordered_map<string, int> getStringToIntMap(){
+		return names; 
+	}
+
 	void insert(node& n) {
 		if (graph.find(n.id) == graph.end()) {
 			vector<pair<int, double>> a = {};
@@ -131,7 +135,7 @@ public:
 	}
 
 	//given a name identify what node it is 
-	node identifier(string str) {
+	node& identifier(string str) {
 		int i;
 		if (names.count(str) != 0)
 			i = names[str];
@@ -213,8 +217,7 @@ public:
     }
   }
 	
-	//hard coding to 2 works
-	//accurate version is on github
+
 	void printGraph() {
 		auto iter = graph.begin();
 		for (iter; iter != graph.end(); iter++) {
@@ -227,4 +230,3 @@ public:
 	}
 
 };
-
