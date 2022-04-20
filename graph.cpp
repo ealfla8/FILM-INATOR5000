@@ -202,10 +202,15 @@ public:
     s.push(src.id);
     cout << "Movie Marathon of " << src.name << " based on DFS:" << endl;
 
+    int counter = 0;
+
     while(!s.empty()){
       int u = s.top();
+      if(counter == 11)
+        break;
       if(nodes[u].name != src.name)
         cout << nodes[u].name << " - " << getWeight(nodes[src.id], nodes[u]) << endl;
+      counter += 1;
       s.pop();
       vector<pair<int, double>> neighbors = graph[u];
       for(int v = 0; v < neighbors.size(); v++){
@@ -238,5 +243,6 @@ public:
 	}
 
 };
+
 
     
