@@ -2,13 +2,13 @@
 #include <iomanip>
 #include <string>
 #include <vector>
-#include <algorithm>
 #include <map>
 #include <unordered_map>
 #include <sstream>
 #include <set>
 #include <queue>
 #include <stack>
+#include <algorithm>
 using namespace std;
 
 // idea: read in data and make unordered map with vector<pair<int,double>>> w/ double (weight) initially = 0
@@ -147,71 +147,41 @@ public:
     return graph;
   }
 
-  bool isEqualGenre(node& a, node&b){
-	  int ii = 0; 
-	  for(int i=0; i<a.genre.size(); i++){
-		  if(find(b.genre.begin(), b.genre.end(), a.genre.at(i)) != b.genre.end())
-		  		ii++; 
-	  }
-	  if( ii == a.genre.size())
-	  		return true; 
-	  return false; 
+  bool isEqualGenre(node& a, node& b){
+    int ii = 0;
+    for(int i = 0; i < a.genre.size(); i++){
+      if(find(b.genre.begin(), b.genre.end(), a.genre.at(i)) != b.genre.end())
+        ii++;
+    }
+    if(ii == a.genre.size())
+      return true;
+    return false;
   }
 
-	void bfs(node& src) {
-		/*
-		set<int> visited;
-		queue<int> q;
-		vector<int> m;
-    cout << "created the set, queue, and vector" << endl;
+  void bfs(node& src){
+    set<int> visited;
+    queue<int> q;
 
-		visited.insert(src.id);
-		q.push(src.id);
-    cout << "inserted and pushed" << endl;
+    visited.insert(src.id);
+    q.push(src.id);
+    cout << "Movies that have same genres as " << src.name << endl;
 
-		while (!q.empty()) {
-      cout << "entered the while loop" << endl;
-			int u = q.front();
-			m.push_back(u);
-			q.pop();
-			vector<pair<int, double>> neighbors = graph[u];
-			for (int v = 0; v < neighbors.size(); v++) {
-        cout << "entered the for loop" << endl;
-				//if (isEqualGenre(node& a, node&b)) {
-					int id = graph[u].at(v).first;
-					int idv = neighbors.at(v).first;
-					if (isEqualGenre(nodes[id], nodes[idv])) {
-            cout << "entered the if statement" << endl;
-						visited.insert(graph[u].at(v).first);
-						q.push(graph[u].at(v).first);
-					}
-				//}
-			}
-		}
-    cout << "reached end of bfs" << endl;
-		return m;
-		*/
-		set<int> visited;
-		queue<int> q;
+    while(!q.empty()){
+      int u = q.front();
+      q.pop();
+      vector<pair<int, double>> neighbors = graph[u];
+      for(int v = 0; v < neighbors.size(); v++){
+        if(visited.count(neighbors.at(v).first) == 0)
+          if(isEqualGenre(src, nodes[neighbors.at(v).first]) == true){
+            visited.insert(neighbors.at(v).first);
+            q.push(neighbors.at(v).first);
+            cout << nodes[neighbors.at(v).first].name << endl;
+          }
+      }
+    }
+  }
 
-		visited.insert(src.id);
-		q.push(src.id);
-		cout << "Movies that have the same genre as " << src.name << endl;
-
-		while(!q.empty()){
-			int u = q.front();
-			q.pop();
-			vector<pair<int, double>> neighbors = graph[u];
-			for(int v = 0; v < neighbors.size(); v++){
-				if(visited.count(neighbors.at(v).first) == 0){
-					visited.insert(neighbors.at(v).first);
-					q.push(neighbors.at(v).first);
-					cout << nodes[neighbors.at(v).first].name << endl;
-				}
-			}
-		}
-	}
-
+/*
 	vector<int> dfs(node& src) {
 		set<int> visited;
 		stack<int> s;
@@ -228,16 +198,6 @@ public:
 			vec.push_back(u);
 			s.pop();
 			vector<pair<int, double>> neighbors = graph[u];
-			/*
-			for (int v : neighbors.size()) {
-				if (visited.count(neighbors.at(v).first) == 0) {
-					if (graph[u].at(v).second >= 0.0 && graph[u].at(v).second <= 0.5) {
-						visited.insert(graph[u].at(v).first);
-						s.push(graph[u].at(v).first);
-					}
-				}
-			}
-			*/
 			for (int v = 0; v < neighbors.size(); v++) {
         cout << "hello in the for loop" << endl;
 				int id = graph[u].at(v).first;
@@ -252,6 +212,31 @@ public:
     cout << "hellow world" << endl;
 		return vec;
 	}
+*/
+
+  void dfs(node& src){
+    set<int> visited;
+    stack<int> s;
+
+    visited.insert(src.id);
+    s.push(src.id);
+    cout << "Movie Marathon of " << src.name << endl;
+
+    while(!s.empty()){
+      int u = s.top();
+      s.pop();
+      vector<pair<int, double>> neighbors = graph[u];
+      for(int v = 0; v < neighbors.size(); v++){
+        if(visited.count(neighbors.at(v).first) == 0){
+          if(neighbors.at(v).second <= 0.75 && neighbors.at(v).second >= 0.5){
+            visited.insert(neighbors.at(v).first);
+            s.push(neighbors.at(v).first);
+            cout << nodes[neighbors.at(v).first].name << endl;
+          }
+        }
+      }
+    }
+  }
 	
 	//hard coding to 2 works
 	//accurate version is on github
@@ -267,6 +252,4 @@ public:
 	}
 
 };
-
-
-    
+ 
