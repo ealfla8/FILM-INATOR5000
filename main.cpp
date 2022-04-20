@@ -3,7 +3,7 @@
 #include <fstream>
 #include <vector>
 #include <sstream>
-#include "graph.h"
+#include "graph.cpp"
 using std::string;
 using std::vector;
 using std::cout;
