@@ -41,7 +41,7 @@ int main() {
         temp -> id = stoi(token.substr(2));
         getline(lineData, token, '\t');
         getline(lineData, token, '\t');
-        temp -> name = token;
+        //temp -> name = token;
         getline(lineData, token, '\t');
         getline(lineData, token, '\t');
         if (token == "en" && (adjList -> getGraph().find(temp -> id) == adjList -> getGraph().end())) {
@@ -111,6 +111,7 @@ int main() {
             for (auto &v : adjList -> getNodes()) {
                 if (v.second.id == temp -> id) {
                     v.second.isExplicit = temp -> isExplicit;
+                    v.second.name = temp -> name;
                     for (auto &w : temp -> genre) {
                         //cout << "ID: " << temp -> id << " genre: " << w << endl;
                         v.second.genre.push_back(w);
@@ -198,8 +199,8 @@ int main() {
         }
     }
 
-    adjList -> printGraph();
-    //adjList.dfs(adjList.getNodes()[1]);
+    //adjList -> printGraph();
+
 
     cout << "num nodes: " << (adjList -> getGraph()).size() << endl;
     int check = 0;
@@ -209,6 +210,11 @@ int main() {
         }
     }
     cout << "num edges: " << check << endl;
+
+    adjList -> printGraph();
+
+    //cout << adjList -> dfs(adjList -> getNodes()[1]) << endl;
+
     //cout << "and upon closer inspection: " << adjList -> getGraph()[0][0].second << endl;
     //cout << "and upon closer inspection: " << adjList -> getGraph()[1][0].second << endl;
     //cout << "and upon closer inspection: " << adjList -> getGraph()[2][0].second << endl;
