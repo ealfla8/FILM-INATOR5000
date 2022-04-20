@@ -108,7 +108,7 @@ public:
   }
 
 	double getWeight(node& from, node& to) {
-		double score = 0.01;
+		double score = 0.0;
 		for (int i = 0; i < from.genre.size(); i++) {
 			if (from.genre[i] == to.genre[i]) {
 				score += 2.5;
@@ -161,27 +161,35 @@ public:
   void bfs(node& src){
     set<int> visited;
     queue<int> q;
+    //vector<string> vec;
 
     visited.insert(src.id);
     q.push(src.id);
-    cout << "Movies that have same genres as " << src.name << endl;
+    cout << "Movies rec via BFS for " << src.name << ": " << endl;
 
     int counter = 0;
     
     while(!q.empty()){
       int u = q.front();
+      if(counter == 11)
+        break;
+      if(nodes[u].name != src.name)
+        cout << nodes[u].name << " - " << getWeight(nodes[src.id], nodes[u]) << endl;
+      counter += 1;
       q.pop();
       vector<pair<int, double>> neighbors = graph[u];
       for(int v = 0; v < neighbors.size(); v++){
-        if(visited.count(neighbors.at(v).first) == 0)
+        if(visited.count(neighbors.at(v).first) == 0){
+          visited.insert(neighbors.at(v).first);
+          q.push(neighbors.at(v).first);
+        }
+          /*
           if(isEqualGenre(src, nodes[neighbors.at(v).first]) == true && neighbors.at(v).second <= 0.3){
             visited.insert(neighbors.at(v).first);
             q.push(neighbors.at(v).first);
             cout << nodes[neighbors.at(v).first].name << endl;
-            counter += 1;
-            if(counter > 10)
-              break;
           }
+        */
       }
     }
   }
@@ -192,19 +200,25 @@ public:
 
     visited.insert(src.id);
     s.push(src.id);
-    cout << "Movie Marathon of " << src.name << endl;
+    cout << "Movie Marathon of " << src.name << " based on DFS:" << endl;
 
     while(!s.empty()){
       int u = s.top();
+      if(nodes[u].name != src.name)
+        cout << nodes[u].name << " - " << getWeight(nodes[src.id], nodes[u]) << endl;
       s.pop();
       vector<pair<int, double>> neighbors = graph[u];
       for(int v = 0; v < neighbors.size(); v++){
         if(visited.count(neighbors.at(v).first) == 0){
+          /*
           if(neighbors.at(v).second <= 0.75 && neighbors.at(v).second >= 0.5){
             visited.insert(neighbors.at(v).first);
             s.push(neighbors.at(v).first);
             cout << nodes[neighbors.at(v).first].name << endl;
           }
+          */
+          visited.insert(neighbors.at(v).first);
+          s.push(neighbors.at(v).first);
         }
       }
     }
@@ -224,3 +238,5 @@ public:
 	}
 
 };
+
+    
