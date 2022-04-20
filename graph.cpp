@@ -166,53 +166,25 @@ public:
     q.push(src.id);
     cout << "Movies that have same genres as " << src.name << endl;
 
+    int counter = 0;
+    
     while(!q.empty()){
       int u = q.front();
       q.pop();
       vector<pair<int, double>> neighbors = graph[u];
       for(int v = 0; v < neighbors.size(); v++){
         if(visited.count(neighbors.at(v).first) == 0)
-          if(isEqualGenre(src, nodes[neighbors.at(v).first]) == true){
+          if(isEqualGenre(src, nodes[neighbors.at(v).first]) == true && neighbors.at(v).second <= 0.3){
             visited.insert(neighbors.at(v).first);
             q.push(neighbors.at(v).first);
             cout << nodes[neighbors.at(v).first].name << endl;
+            counter += 1;
+            if(counter > 10)
+              break;
           }
       }
     }
   }
-
-/*
-	vector<int> dfs(node& src) {
-		set<int> visited;
-		stack<int> s;
-		vector<int> vec;
-    cout << "hello" << endl;
-    
-		visited.insert(src.id);
-		s.push(src.id);
-    cout << "hello part 1" << endl;
-
-		while (!s.empty()) {
-      cout << "hello in the while" << endl;
-			int u = s.top();
-			vec.push_back(u);
-			s.pop();
-			vector<pair<int, double>> neighbors = graph[u];
-			for (int v = 0; v < neighbors.size(); v++) {
-        cout << "hello in the for loop" << endl;
-				int id = graph[u].at(v).first;
-				int idv = neighbors.at(v).first;
-				if (isAdjacent(id, idv) >= 1) {
-          cout << "hello in the if statement" << endl;
-					visited.insert(graph[u].at(v).first);
-					s.push(graph[u].at(v).first);
-				}
-			}
-		}
-    cout << "hellow world" << endl;
-		return vec;
-	}
-*/
 
   void dfs(node& src){
     set<int> visited;
@@ -252,4 +224,3 @@ public:
 	}
 
 };
- 
