@@ -30,7 +30,7 @@ int main() {
     getline(f0Stream, inputInit);
     unsigned long count0 = 0;
     while (getline(f0Stream, inputInit)) {
-        if (count0 == 10000) {  //change for different range of test cases
+        if (count0 == 100) {  //change for different range of test cases
             break;
         }
         stringstream lineData(inputInit);
@@ -38,7 +38,7 @@ int main() {
         node *temp = new node;
 
         getline(lineData, token, '\t');
-        temp -> id = stol(token.substr(2));
+        temp -> id = stoi(token.substr(2));
         getline(lineData, token, '\t');
         getline(lineData, token, '\t');
         temp -> name = token;
@@ -68,7 +68,7 @@ int main() {
     getline(f1Stream, input);
     unsigned long count1 = 0;
     while (getline(f1Stream, input)) {
-        if (count1 == 10000) {  //change for different range of test cases
+        if (count1 == 100) {  //change for different range of test cases
             break;
         }
 
@@ -78,7 +78,7 @@ int main() {
         string tempStr;
 
         getline(lineData, token, '\t');
-        temp -> id = stol(token.substr(2));
+        temp -> id = stoi(token.substr(2));
         if (adjList -> getGraph().find(temp -> id) == adjList -> getGraph().end()) {
             continue;
         }
@@ -103,12 +103,19 @@ int main() {
 
             while (tempStr.find(',') != string::npos && temp -> genre.size() < 3) {
                 temp -> genre.push_back(tempStr.substr(0, tempStr.find(',')));  //romance,comedy,somethingelse
+                //cout << "ID: " << temp -> id << " genre: " << tempStr.substr(0, tempStr.find(',')) << endl;
                 tempStr = tempStr.substr(tempStr.find(',') + 1);
             }
             temp -> genre.push_back(tempStr.substr(0, string::npos));
             for (auto v : adjList -> getNodes()) {
-                v.second.isExplicit = temp -> isExplicit;
-                v.second.genre = temp -> genre;
+                if (v.second.id == temp -> id) {
+                    v.second.isExplicit = temp -> isExplicit;
+                    for (auto w : temp -> genre) {
+                        cout << "ID: " << temp -> id << " genre: " << w << endl;
+                        v.second.genre.push_back(w);
+                    }
+                }
+                //v.second.genre = temp -> genre;
             }
             count1 += 1;
         }
@@ -132,7 +139,7 @@ int main() {
     getline(f2Stream, input);
     unsigned long count2 = 0;
     while (getline(f2Stream, input)) {
-        if (count2 == 10000) { //change for different range of test cases
+        if (count2 == 100) { //change for different range of test cases
             break;
         }
 
@@ -157,35 +164,51 @@ int main() {
         delete temp;
     }
 
-    //std::cout << "made it 3" << std::endl;
-
     f2Stream.close();
 
-    //adjList -> printGraph();
-    //adjList.dfs(adjList.getNodes()[1]);
-
-    //cout << "num nodes: " << (adjList -> getGraph()).size();
-    return 0;
-}
-
-/*adjacencyList* adjList = new adjacencyList;
-    node* node1 = new node;
+    /*adjacencyList* adjList = new adjacencyList();
+    node* node1 = new node();
     node1 -> id = 1;
     node1 -> name = "One!";
     node1 -> genre = {"action", "comedy"};
 
-    node* node2 = new node;
+    node* node2 = new node();
     node2 -> id = 2;
     node2 -> name = "Two!";
     node2 -> genre = {"action", "romance"};
 
-    node* node3 = new node;
+    node* node3 = new node();
     node3 -> id = 3;
     node3 -> name = "Three!";
     node3 -> genre = {"romance"};
 
     adjList -> insert(*node1);
     adjList -> insert(*node2);
-    adjList -> insert(*node3);
+    adjList -> insert(*node3);*/
 
-    */
+    for (int i = 0; i < adjList -> getGraph().size(); i++) {
+        for (int j = 0; j < adjList -> getGraph().size(); j++) {
+            adjList -> createEdge(adjList -> getNodes()[i], adjList -> getNodes()[j]);
+            //cout << adjList -> getNodes()[i].genre[0] << " " << adjList -> getNodes()[j].genre[0] << endl;
+            for (auto k : adjList -> getNodes()[i].genre) {
+                cout << k << endl;
+            }
+        }
+    }
+
+    //adjList -> printGraph();
+    //adjList.dfs(adjList.getNodes()[1]);
+
+    cout << "num nodes: " << (adjList -> getGraph()).size() << endl;
+    int check = 0;
+    for (auto i : adjList -> getGraph()) {
+        for (auto j : i.second) {
+            check += 1;
+        }
+    }
+    cout << "num edges: " << check << endl;
+    //cout << "and upon closer inspection: " << adjList -> getGraph()[0][0].second << endl;
+    //cout << "and upon closer inspection: " << adjList -> getGraph()[1][0].second << endl;
+    //cout << "and upon closer inspection: " << adjList -> getGraph()[2][0].second << endl;
+    return 0;
+}
