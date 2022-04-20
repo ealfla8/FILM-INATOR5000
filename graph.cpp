@@ -33,7 +33,7 @@ struct node {
 		name = director = "";
 		rating = 0.0;
 		isExplicit = false;
-		id = 0000000;
+		id = 0;
 		startYear = 0;
 	}
 
@@ -46,6 +46,17 @@ struct node {
 		genre = g;
 		startYear = sY;
 	}
+
+  void to_string(node& n){
+    cout << "Name: " << name << endl;
+    cout << "Director: " << director << endl;
+    cout << "Rating: " << rating << endl;
+    cout << "Explicit: " << isExplicit << endl;
+    cout << "Genre(s): ";
+    for(int i = 0; i < genre.size(); i++)
+      cout << genre.at(i) << " ";
+    cout << endl << "Year Released: " << startYear << endl;
+  }
 };
 
 class adjacencyList {
@@ -61,29 +72,11 @@ public:
 
 	void insert(node& n) {
 		if (graph.find(n.id) == graph.end()) {
-			//pair<int, double> a = make_pair(n.id, 0.0);
 			vector<pair<int, double>> a = {};
 			graph[n.id] = a;
 			nodes[n.id] = n;
-			//graph[n.id].pop_back();
 			names[n.name] = n.id;
 		}
-		//if node shares genre with any movie, create an edge with it...
-    /*
-		auto iter = graph.begin();
-		//iter++;
-		for (iter; iter != graph.end(); iter++) {
-			int i = iter->first;
-      cout << i << endl;
-      if(isAdjacent(n.id, i) != 0){ //this is the problem!! it doesn't get here!!! 
-        cout << "it got inside the third if" << endl;
-				pair<int, double> p1 = make_pair(n.id, 0.0); //the pair that represents the movie adjacent to i
-				pair<int, double> p2 = make_pair(i, 0.0); //the pair that represents the movie adjecent to n
-				graph[n.id].push_back(p2); //pushback p2 into vector of movies adjacent to n
-				graph[i].push_back(p1); //pushback p1 into vector of movies adjacent to i
-      }
-		}
-  */
 		vCount++;
 	}
 
@@ -91,15 +84,6 @@ public:
 	int isAdjacent(int a, int b) { //this works!! yay!!!
 		node aA = nodes[a];
 		node bB = nodes[b];
-
-		/*printf("printing node A genres:\n");
-		for(auto i: aA.genre){
-			cout << i << endl;
-		}
-		printf("\nprinting node B genres:\n");
-		for(auto i: bB.genre){
-			cout << i << endl;
-		} */ 
 		int c = 0;
 
 		for(int i = 0; i < aA.genre.size(); ++i){
@@ -109,7 +93,7 @@ public:
 				}
 			}
 		}
-		cout << c; 
+		//cout << c; 
 		return c;
 	}
 
@@ -163,37 +147,32 @@ public:
 		set<int> visited;
 		queue<int> q;
 		vector<int> m;
+    cout << "created the set, queue, and vector" << endl;
 
 		visited.insert(src.id);
 		q.push(src.id);
+    cout << "inserted and pushed" << endl;
 
 		while (!q.empty()) {
+      cout << "entered the while loop" << endl;
 			int u = q.front();
 			m.push_back(u);
 			q.pop();
 			vector<pair<int, double>> neighbors = graph[u];
-			//sort(neighbors.begin(), neighbors.begin() + neighbors.size());
 			for (int v = 0; v < neighbors.size(); v++) {
+        cout << "entered the for loop" << endl;
 				//if (visited.count(neighbors.at(v).first) != 0) {
-					/*
-					if (graph[u].at(v).second >= 0.0 && graph[u].at(v).second <= 0.5) {
-						visited.insert(graph[u].at(v).first);
-						q.push(graph[u].at(v).first);
-					}
-					*/
-					//make sure that all the genres are equalllll
-					//unordered_map<int, vector<pair<int, double>>> graph;
-					//unordered_map<int, node> nodes;
-					//unordered_map<string, int> names;
 					int id = graph[u].at(v).first;
 					int idv = neighbors.at(v).first;
 					if (nodes[id].genre == nodes[idv].genre) {
+            cout << "entered the if statement" << endl;
 						visited.insert(graph[u].at(v).first);
 						q.push(graph[u].at(v).first);
 					}
 				//}
 			}
 		}
+    cout << "reached end of bfs" << endl;
 		return m;
 	}
 
@@ -201,23 +180,18 @@ public:
 		set<int> visited;
 		stack<int> s;
 		vector<int> vec;
-
+    cout << "hello" << endl;
+    
 		visited.insert(src.id);
 		s.push(src.id);
+    cout << "hello part 1" << endl;
 
 		while (!s.empty()) {
+      cout << "hello in the while" << endl;
 			int u = s.top();
 			vec.push_back(u);
 			s.pop();
 			vector<pair<int, double>> neighbors = graph[u];
-			/*
-			for (visited.count(neighbors.at(v).first) == 0) {
-				if (graph[u].at(v).second > 0.0 && graph[u].at(v).second > 0.5 && graph[u].at(v).second <= 1) {
-					visited.insert(graph[u].at(v).first);
-					s.push(graph[u].at(v).first);
-				}
-			}
-			*/
 			/*
 			for (int v : neighbors.size()) {
 				if (visited.count(neighbors.at(v).first) == 0) {
@@ -228,37 +202,25 @@ public:
 				}
 			}
 			*/
-			//make sure at least one is equal
-			// 0 1 2 --> 0 0 - 0 1 - 0 2 - 1 1 - 1 2 - 2 2
-			// 0 1 2
 			for (int v = 0; v < neighbors.size(); v++) {
+        cout << "hello in the for loop" << endl;
 				int id = graph[u].at(v).first;
 				int idv = neighbors.at(v).first;
-				if (nodes[id].genre.at(0) == nodes[idv].genre.at(0) || nodes[id].genre.at(0) == nodes[idv].genre.at(1) || nodes[id].genre.at(0) == nodes[idv].genre.at(2) || nodes[id].genre.at(1) == nodes[idv].genre.at(1) || nodes[id].genre.at(1) == nodes[idv].genre.at(2) || nodes[id].genre.at(2) == nodes[idv].genre.at(2)) {
+				if (isAdjacent(id, idv) >= 1) {
+          cout << "hello in the if statement" << endl;
 					visited.insert(graph[u].at(v).first);
 					s.push(graph[u].at(v).first);
 				}
 			}
 		}
+    cout << "hellow world" << endl;
 		return vec;
 	}
 	
 	//hard coding to 2 works
 	//accurate version is on github
 	void printGraph() {
-		/*
 		auto iter = graph.begin();
-		auto i = nodes.begin();
-		for (iter; iter != graph.end(); iter++) {
-			cout << iter->first << ": " << i->second.name << endl;
-			cout << "Adjacent Movies: " << endl;
-			for (int i = 0; i < iter->second.size(); i++) 
-				cout << iter->second.at(i).first << ": " << nodes[iter->second.at(i).first].name << " - " << iter->second.at(i).second << endl;
-			cout << endl;
-		}
-		*/
-		auto iter = graph.begin();
-		//auto i = nodes.begin();
 		for (iter; iter != graph.end(); iter++) {
 			cout << iter->first << ": " << nodes[iter->first].name << endl;
 			cout << "Adjacent Movies: " << endl;
@@ -269,3 +231,53 @@ public:
 	}
 
 };
+
+int main(){
+  vector<string> g1 = {"adventure","action","comedy"};
+  vector<string> g2 = {"mystery","drama","action"};
+  vector<string> g3 = {"fantasy","adventure","family"};
+  vector<string> g4 = {"romance", "drama", "teen"};
+  vector<string> g5 = {"action", "adventure", "comedy"};
+  vector<string> g6 = {"action", "adventure", "family"};
+  
+  node av = node(0504, "Avengers", "Josh Wedon", 8.0, false, g1, 2012);
+  node sh = node(1225, "Sherlock Holmes", "Guy Ritchie", 7.6, false, g2, 2009);
+  node dl = node(0117, "Dolittle", "Stephen Gaghan", 5.6, false, g3, 2020);
+  node pw = node(1821, "The Perks of Being a Wallflower", "Stephen Chbosky", 8.0, false, g4, 2012);
+  node aw = node(0706, "Antman and the Wasp", "Peyton Reed", 7.0, false, g4, 2018);
+  node iw = node(0427, "Infinity War", "Joe Russo", 8.5, false, g5, 2018);
+  node im = node(0502, "Iron Man", "Jon Fabreau", 7.9, false, g6, 2008);
+
+  adjacencyList g;
+  g.insert(av);
+  g.insert(sh);
+  g.insert(dl);
+  g.insert(pw);
+  g.insert(aw);
+  g.insert(im);
+
+  g.createEdge(av, sh);
+  g.createEdge(av, dl);
+  g.createEdge(av, pw);
+  g.createEdge(av, aw);
+  g.createEdge(av, im);
+  g.createEdge(sh, dl);
+  g.createEdge(sh, pw);
+  g.createEdge(sh, aw);
+  g.createEdge(sh, im);
+  g.createEdge(dl, pw);
+  g.createEdge(dl, aw);
+  g.createEdge(dl, im);
+  g.createEdge(pw, aw);
+  g.createEdge(pw, im);
+  g.createEdge(aw, im);
+  
+  //g.printGraph();
+  //av.to_string(av);
+  //cout << endl;
+  //sh.to_string(sh);
+  //cout << endl;
+  //dl.to_string(dl);
+
+}
+    
