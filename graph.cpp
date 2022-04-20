@@ -108,7 +108,7 @@ public:
   }
 
 	double getWeight(node& from, node& to) {
-		double score = 0.0;
+		double score = 0.01;
 		for (int i = 0; i < from.genre.size(); i++) {
 			if (from.genre[i] == to.genre[i]) {
 				score += 2.5;
