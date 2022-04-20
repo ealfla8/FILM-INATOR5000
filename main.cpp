@@ -1,214 +1,237 @@
 #include <iostream>
 #include <iomanip>
-#include <fstream>
+#include <string>
 #include <vector>
+#include <map>
+#include <unordered_map>
 #include <sstream>
-#include "graph.cpp"
-using std::string;
-using std::vector;
-using std::cout;
-using std::endl;
-using std::ifstream;
-using std::stringstream;
+#include <set>
+#include <queue>
+#include <stack>
+using namespace std;
 
-int main() {
+// idea: read in data and make unordered map with vector<pair<int,double>>> w/ double (weight) initially = 0
+//		 also at same time create nodes and push into map of map<int node> m
+//		 for each node in map, check and see if there is a single genre in common with each other, if there is, create "edge"
+//		 select "choice" and head to that specific index in graph
+//		 look at the connected edges and calculate weight; choose the max/min (max similarity score or min 1/similarity score) and return that
 
-    adjacencyList* adjList = new adjacencyList();
 
-    string file0 = "title.akas.tsv"; //for finding all English titles
-    string file1 = "title.basics.tsv"; //for title, isAdult, genre
-    string file2 = "title.crew.tsv"; //for directors, writers
+struct node {
+	int id;
+	int startYear;
 
-    ifstream f0Stream;
-    f0Stream.open(file0);
-    if (!(f0Stream.is_open())) {
-        cout << "You twit." << endl;
+	string name;
+	string director;
+	vector<string> genre;
+	
+	double rating;
+
+	bool isExplicit;
+
+	node() {
+		name = director = "";
+		rating = 0.0;
+		isExplicit = false;
+		id = 0;
+		startYear = 0;
+	}
+
+	node(int id,string n, string d, double r, bool e, vector<string> g, int sY) {
+		name = n;
+    director = d;
+		rating = r;
+		isExplicit = e;
+		this->id = id;
+		genre = g;
+		startYear = sY;
+	}
+
+  void to_string(node& n){
+    cout << "Name: " << name << endl;
+    cout << "Director: " << director << endl;
+    cout << "Rating: " << rating << endl;
+    cout << "Explicit: " << isExplicit << endl;
+    cout << "Genre(s): ";
+    for(int i = 0; i < genre.size(); i++)
+      cout << genre.at(i) << " ";
+    cout << endl << "Year Released: " << startYear << endl;
+  }
+};
+
+class adjacencyList {
+	double vCount;
+	unordered_map<int, vector<pair<int, double>>> graph;
+	unordered_map<int, node> nodes;
+	unordered_map<string, int> names;
+
+public:
+	adjacencyList() {
+		vCount = 0.0;
+	}
+
+	void insert(node& n) {
+		if (graph.find(n.id) == graph.end()) {
+			vector<pair<int, double>> a = {};
+			graph[n.id] = a;
+			nodes[n.id] = n;
+			names[n.name] = n.id;
+		}
+		vCount++;
+	}
+
+	int isAdjacent(int a, int b) { //this works!! yay!!!
+		node aA = nodes[a];
+		node bB = nodes[b];
+		int c = 0;
+
+		for(int i = 0; i < aA.genre.size(); ++i){
+			for(int j = i; j < bB.genre.size(); ++j){
+				if(aA.genre[i] == bB.genre[j]){
+					++c;
+				}
+			}
+		}
+		//cout << c; 
+		return c;
+	}
+
+  void createEdge(node& a, node& b){
+    int i = isAdjacent(a.id, b.id);
+    if(i >= 1){
+      double weightAB = getWeight(a, b);
+      double weightBA = getWeight(b, a);
+      graph[a.id].push_back(make_pair(b.id, weightAB));
+      graph[b.id].push_back(make_pair(a.id, weightBA));
     }
+  }
 
-    string inputInit;
+	double getWeight(node& from, node& to) {
+		double score = 0.0;
+		for (int i = 0; i < from.genre.size(); i++) {
+			if (from.genre[i] == to.genre[i]) {
+				score += 2.5;
+			}
+		}
 
-    getline(f0Stream, inputInit);
-    unsigned long count0 = 0;
-    while (getline(f0Stream, inputInit)) {
-        if (count0 == 100) {  //change for different range of test cases
-            break;
-        }
-        stringstream lineData(inputInit);
-        string token;
-        node *temp = new node;
+		if (from.director == to.director) {
+			score += 1.5;
+		}
 
-        getline(lineData, token, '\t');
-        temp -> id = stoi(token.substr(2));
-        getline(lineData, token, '\t');
-        getline(lineData, token, '\t');
-        temp -> name = token;
-        getline(lineData, token, '\t');
-        getline(lineData, token, '\t');
-        if (token == "en" && (adjList -> getGraph().find(temp -> id) == adjList -> getGraph().end())) {
-            temp -> genre = {};
-            adjList -> insert(*temp);
-            count0 += 1;
-            //cout << "just inserted node with ID: " << temp -> id << " and name: " << temp -> name << endl;
-        }
-        delete temp;
-    }
+		if (from.isExplicit == to.isExplicit) {
+			score += 1.5;
+		}
 
-    f0Stream.close();
+		if (abs(from.startYear - to.startYear) <= 5.0) {
+			score += 1.5;
+		}
 
+		double weight = (1.0 / score);
+		return weight;
+	}
 
-    ifstream f1Stream;
-    f1Stream.open(file1);
-    if (!(f1Stream.is_open())) {
-        cout << "You twit." << endl;
-    }
+	//given a name identify what node it is 
+	node identifier(string str) {
+		int i;
+		if (names.count(str) != 0)
+			i = names[str];
+		return nodes[i];
+	}
 
-    string input;
+	unordered_map<int, node>& getNodes() {
+		return nodes;
+	}
 
-    //std::cout << "made it" << std::endl;
-    getline(f1Stream, input);
-    unsigned long count1 = 0;
-    while (getline(f1Stream, input)) {
-        if (count1 == 100) {  //change for different range of test cases
-            break;
-        }
+  unordered_map<int, vector<pair<int, double>>> getGraph(){
+    return graph;
+  }
 
-        stringstream lineData(input);
-        string token;
-        node* temp = new node();
-        string tempStr;
+	vector<int> bfs(node& src) {
+		set<int> visited;
+		queue<int> q;
+		vector<int> m;
+    cout << "created the set, queue, and vector" << endl;
 
-        getline(lineData, token, '\t');
-        temp -> id = stoi(token.substr(2));
-        if (adjList -> getGraph().find(temp -> id) == adjList -> getGraph().end()) {
-            continue;
-        }
-        else {
-            getline(lineData, token, '\t');
-            getline(lineData, token, '\t');
-            temp -> name = token;
-            getline(lineData, token, '\t');
-            getline(lineData, token, '\t');
-            if (token == "1") {
-                temp -> isExplicit = true;
-            }
-            else {
-                temp -> isExplicit = false;
-            }
-            getline(lineData, token, '\t');
-            getline(lineData, token, '\t');
-            getline(lineData, token, '\t');
-            getline(lineData, token, '\t');
-            tempStr = token;
-            //std::cout << "made it 2" << std::endl;
+		visited.insert(src.id);
+		q.push(src.id);
+    cout << "inserted and pushed" << endl;
 
-            while (tempStr.find(',') != string::npos && temp -> genre.size() < 3) {
-                temp -> genre.push_back(tempStr.substr(0, tempStr.find(',')));  //romance,comedy,somethingelse
-                //cout << "ID: " << temp -> id << " genre: " << tempStr.substr(0, tempStr.find(',')) << endl;
-                tempStr = tempStr.substr(tempStr.find(',') + 1);
-            }
-            temp -> genre.push_back(tempStr.substr(0, string::npos));
-            for (auto v : adjList -> getNodes()) {
-                if (v.second.id == temp -> id) {
-                    v.second.isExplicit = temp -> isExplicit;
-                    for (auto w : temp -> genre) {
-                        cout << "ID: " << temp -> id << " genre: " << w << endl;
-                        v.second.genre.push_back(w);
-                    }
-                }
-                //v.second.genre = temp -> genre;
-            }
-            count1 += 1;
-        }
-        delete temp;
-    }
+		while (!q.empty()) {
+      cout << "entered the while loop" << endl;
+			int u = q.front();
+			m.push_back(u);
+			q.pop();
+			vector<pair<int, double>> neighbors = graph[u];
+			for (int v = 0; v < neighbors.size(); v++) {
+        cout << "entered the for loop" << endl;
+				//if (visited.count(neighbors.at(v).first) != 0) {
+					int id = graph[u].at(v).first;
+					int idv = neighbors.at(v).first;
+					if (nodes[id].genre == nodes[idv].genre) {
+            cout << "entered the if statement" << endl;
+						visited.insert(graph[u].at(v).first);
+						q.push(graph[u].at(v).first);
+					}
+				//}
+			}
+		}
+    cout << "reached end of bfs" << endl;
+		return m;
+	}
 
-    //std::cout << "made it 1" << std::endl;
+	vector<int> dfs(node& src) {
+		set<int> visited;
+		stack<int> s;
+		vector<int> vec;
+    cout << "hello" << endl;
+    
+		visited.insert(src.id);
+		s.push(src.id);
+    cout << "hello part 1" << endl;
 
-    f1Stream.close();
+		while (!s.empty()) {
+      cout << "hello in the while" << endl;
+			int u = s.top();
+			vec.push_back(u);
+			s.pop();
+			vector<pair<int, double>> neighbors = graph[u];
+			/*
+			for (int v : neighbors.size()) {
+				if (visited.count(neighbors.at(v).first) == 0) {
+					if (graph[u].at(v).second >= 0.0 && graph[u].at(v).second <= 0.5) {
+						visited.insert(graph[u].at(v).first);
+						s.push(graph[u].at(v).first);
+					}
+				}
+			}
+			*/
+			for (int v = 0; v < neighbors.size(); v++) {
+        cout << "hello in the for loop" << endl;
+				int id = graph[u].at(v).first;
+				int idv = neighbors.at(v).first;
+				if (isAdjacent(id, idv) >= 1) {
+          cout << "hello in the if statement" << endl;
+					visited.insert(graph[u].at(v).first);
+					s.push(graph[u].at(v).first);
+				}
+			}
+		}
+    cout << "hellow world" << endl;
+		return vec;
+	}
+	
+	//hard coding to 2 works
+	//accurate version is on github
+	void printGraph() {
+		auto iter = graph.begin();
+		for (iter; iter != graph.end(); iter++) {
+			cout << iter->first << ": " << nodes[iter->first].name << endl;
+			cout << "Adjacent Movies: " << endl;
+			for (int i = 0; i < iter->second.size(); i++)
+				cout << iter->second.at(i).first << ": " << nodes[iter->second.at(i).first].name << " - " << iter->second.at(i).second << endl;
+			cout << endl;
+		}
+	}
 
-    ifstream f2Stream;
-    f2Stream.open(file2);
-    if (!(f2Stream.is_open())) {
-        cout << "You twit." << endl;
-    }
+};
 
-    string input2;
-
-    //std::cout << "made it 2" << std::endl;
-
-    getline(f2Stream, input);
-    unsigned long count2 = 0;
-    while (getline(f2Stream, input)) {
-        if (count2 == 100) { //change for different range of test cases
-            break;
-        }
-
-        stringstream lineData(input);
-        string token;
-        node* temp = new node();
-        string tempStr;
-
-        getline(lineData, token, '\t');
-        temp -> id = stol(token.substr(2));
-        getline(lineData, token, '\t');
-        temp -> director = token.substr(0, ',');
-        getline(lineData, token, '\t');
-
-        for (auto v : adjList -> getNodes()) {
-            if (v.second.id == temp -> id) {
-                v.second.director = temp -> director;
-            }
-        }
-        count2 += 1;
-
-        delete temp;
-    }
-
-    f2Stream.close();
-
-    /*adjacencyList* adjList = new adjacencyList();
-    node* node1 = new node();
-    node1 -> id = 1;
-    node1 -> name = "One!";
-    node1 -> genre = {"action", "comedy"};
-
-    node* node2 = new node();
-    node2 -> id = 2;
-    node2 -> name = "Two!";
-    node2 -> genre = {"action", "romance"};
-
-    node* node3 = new node();
-    node3 -> id = 3;
-    node3 -> name = "Three!";
-    node3 -> genre = {"romance"};
-
-    adjList -> insert(*node1);
-    adjList -> insert(*node2);
-    adjList -> insert(*node3);*/
-
-    for (int i = 0; i < adjList -> getGraph().size(); i++) {
-        for (int j = 0; j < adjList -> getGraph().size(); j++) {
-            adjList -> createEdge(adjList -> getNodes()[i], adjList -> getNodes()[j]);
-            //cout << adjList -> getNodes()[i].genre[0] << " " << adjList -> getNodes()[j].genre[0] << endl;
-            for (auto k : adjList -> getNodes()[i].genre) {
-                cout << k << endl;
-            }
-        }
-    }
-
-    //adjList -> printGraph();
-    //adjList.dfs(adjList.getNodes()[1]);
-
-    cout << "num nodes: " << (adjList -> getGraph()).size() << endl;
-    int check = 0;
-    for (auto i : adjList -> getGraph()) {
-        for (auto j : i.second) {
-            check += 1;
-        }
-    }
-    cout << "num edges: " << check << endl;
-    //cout << "and upon closer inspection: " << adjList -> getGraph()[0][0].second << endl;
-    //cout << "and upon closer inspection: " << adjList -> getGraph()[1][0].second << endl;
-    //cout << "and upon closer inspection: " << adjList -> getGraph()[2][0].second << endl;
-    return 0;
-}
